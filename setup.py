@@ -104,7 +104,7 @@ install_requires = [
     'dcxml>=0.1.1',
     'dojson>=1.3.2',
     'Flask>=0.12.4',
-    'Flask-Admin>=1.5.0',
+    'Flask-Admin>=1.5.3',
     'Flask-BabelEx>=0.9.3',
     'Flask-Caching>=1.3.2',
     'Flask-Debugtoolbar>=0.10.1',
@@ -245,6 +245,7 @@ setup(
         'invenio_base.api_blueprints': [
             'zenodo_rest = zenodo.modules.rest.views:blueprint',
             'zenodo_deposit = zenodo.modules.deposit.views_rest:blueprint',
+            'zenodo_similarity = zenodo.modules.similarity.views:blueprint',
         ],
         'invenio_base.api_converters': [
             'file_key = zenodo.modules.deposit.utils:FileKeyConverter',
