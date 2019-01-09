@@ -96,7 +96,7 @@ setup_requires = [
 
 install_requires = [
     'arrow>=0.10.0',
-    'bleach>=2.0.0',
+    'bleach>=2.1.3',
     'CairoSVG>=1.0.22,<2.0.0',
     'citeproc-py-styles>=0.1.1',
     'citeproc-py>=0.4.0',
@@ -104,7 +104,7 @@ install_requires = [
     'dcxml>=0.1.1',
     'dojson>=1.3.2',
     'Flask>=0.12.4',
-    'Flask-Admin>=1.5.0',
+    'Flask-Admin>=1.5.3',
     'Flask-BabelEx>=0.9.3',
     'Flask-Caching>=1.3.2',
     'Flask-Debugtoolbar>=0.10.1',

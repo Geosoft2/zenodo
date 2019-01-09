@@ -181,7 +181,7 @@ CELERY_BEAT_SCHEDULE = {
     },
     'openaire-updater': {
         'task': 'zenodo.modules.utils.tasks.update_search_pattern_sets',
-        'schedule': timedelta(hours=2),
+        'schedule': timedelta(hours=12),
     },
     'cleanup-indexed-deposits': {
         'task': 'zenodo.modules.deposit.tasks.cleanup_indexed_deposits',
@@ -260,7 +260,7 @@ CELERY_BEAT_SCHEDULE = {
     },
     'stats-update-record-statistics': {
         'task': 'zenodo.modules.stats.tasks.update_record_statistics',
-        'schedule': timedelta(hours=3),
+        'schedule': crontab(minute=0, hour=1),  # Every day at 01:00 UTC
     },
     'stats-export': {
         'task': 'zenodo.modules.stats.tasks.export_stats',
@@ -733,11 +733,11 @@ RECORDS_UI_ENDPOINTS = dict(
         record_class='zenodo.modules.records.api:ZenodoRecord',
     ),
     recid_similar=dict(
-        pid_type='recid',
-        route='/record/<pid_value>/similar',
-        template='zenodo_records/record_similar.html',
-        view_imp='zenodo.modules.similarity.ui.similar_records',
-        record_class='zenodo.modules.records.api:ZenodoRecord',
+    pid_type='recid',
+    route='/record/<pid_value>/similar',
+    template='zenodo_records/record_similar.html',
+    view_imp='zenodo.modules.similarity.ui.similar_records',
+    record_class='zenodo.modules.records.api:ZenodoRecord',
     ),
 )
 RECORDS_UI_ENDPOINTS.update(ACCESSREQUESTS_RECORDS_UI_ENDPOINTS)
