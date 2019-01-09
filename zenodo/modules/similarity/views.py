@@ -92,7 +92,7 @@ def similar(recid):
                 },
                 {
                     'id': 'c',
-                    'similarity': 0.85
+                    'similarity': 0.25
                 },
                 {
                     'id': 'f',
