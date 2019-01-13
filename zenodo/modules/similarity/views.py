@@ -60,22 +60,6 @@ def _format_args():
             separators=(',', ':'),
         )
 
-
-@blueprint.route('/similarity/', methods=['GET'])
-def index():
-    """Demo endpoint."""
-    return Response(
-        json.dumps({
-            'similarity': {
-                'geosoftware2': 'rocks'
-            }
-        },
-            **_format_args()
-        ),
-        mimetype='application/json',
-    )
-
-
 @blueprint.route('/records/<recid>/similar', methods=['GET'])
 def similar(recid):
     """Get similar records."""
@@ -87,16 +71,20 @@ def similar(recid):
             'record': recid,
             'similar': [
                 {
-                    'id': 'a',
+                    'id': '2',
                     'similarity': 0.9
                 },
                 {
-                    'id': 'c',
+                    'id': '4',
                     'similarity': 0.85
                 },
                 {
-                    'id': 'f',
+                    'id': '6',
                     'similarity': 0.4
+                },
+                {
+                    'id': '8',
+                    'similarity': 0.1
                 }
             ]
         },
