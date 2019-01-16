@@ -83,6 +83,7 @@
       {%- set files = record.files if current_user|has_record_perm(record, 'read-files') else [] %}
       {%-  include "zenodo_records/box/preview.html" %}
       {%-  include "zenodo_records/box/files.html" %}
+      {%-  include "zenodo_records/box/suggestion.html" %}
       {%-  include "zenodo_records/box/references.html" %}
       {%-  include "zenodo_records/box/citations.html" %}
       {%- endblock record_body_extra %}
@@ -114,6 +115,7 @@
     </div>
   </div>
 </div>
+
 {%- endblock %}
 
 {%- block javascript %}
@@ -139,9 +141,18 @@
     ], function(typeahead, Bloodhound) {
       angular.element(document).ready(function() {
 
+        // FIXME: This is already defined in js/zenodo_deposit/filters.js.
+        // It should be moved to a common place...
+        angular.module('zenodo.filters').filter('limitToEllipsis', function () {
+          return function(text, n) {
+            return (text.length > n) ? text.substr(0, n-1) + '&hellip;' : text;
+          };
+        });
+
         angular.bootstrap(document.getElementById("citations"), [
             'invenioSearch',
-            'zenodo.filters'
+            'zenodo.filters',
+            'mgcrea.ngStrap.tooltip',
           ]
         );
 
