@@ -28,9 +28,10 @@ from __future__ import absolute_import, print_function
 
 from invenio_deposit.signals import post_action
 from invenio_indexer.signals import before_record_index
+from invenio_records.signals import before_record_insert
 
 from . import config
-from .indexer import index_versioned_record_siblings, indexer_receiver
+from .indexer import index_versioned_record_siblings, indexer_receiver, extractor_receiver
 from .receivers import datacite_register_after_publish, \
     openaire_direct_index_after_publish, sipstore_write_files_after_publish
 
@@ -60,6 +61,9 @@ class ZenodoDeposit(object):
     def register_signals(app):
         """Register Zenodo Deposit signals."""
         before_record_index.connect(indexer_receiver, sender=app, weak=False)
+
+        before_record_insert.connect(extractor_receiver, sender=app, weak=False)
+
         post_action.connect(datacite_register_after_publish, sender=app,
                             weak=False)
         post_action.connect(index_versioned_record_siblings, sender=app,
