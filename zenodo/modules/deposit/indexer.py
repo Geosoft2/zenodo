@@ -33,7 +33,7 @@ from invenio_pidrelations.contrib.records import index_siblings
 from invenio_pidrelations.contrib.versioning import PIDVersioning
 from invenio_pidrelations.serializers.utils import serialize_relations
 from invenio_pidstore.models import PersistentIdentifier
-#from .extractTool import getMetadata
+from .extractTool import getMetadata
 
 from .api import ZenodoDeposit
 
@@ -100,18 +100,20 @@ def indexer_receiver(sender, json=None, record=None, index=None,
             json['relations'] = relations
 
 def extractor_receiver(sender, *args, **kwargs):
-    """Connect to before_record_index to extract spatial related metadata.
+    """Connect to before_record_insert to extract spatial related metadata.
 
     :type json: `invenio_records.api.Deposit`
     :param record: Indexed deposit record.
     :type record: `invenio_records.api.Deposit`
     """
-    #dateiID = record.get('recid')
-    #print(dateiID)
-    #getMetadata('FILES_REST_ENDPOINT', 'bbox', 'single', False)
+    
     record = kwargs['record']
     print(record)
-    record['description'] = 'schroedingers bbox - ist sie da ist sie nicht da?'
+    record['description'] = 'schroedingers boundingbox - ist sie da ist sie nicht da?'
+    print(record['description'])
+    getMetadata('record', 'bbox', 'single', False)
+    #print(record['bbox'])
+
 
 
 def index_versioned_record_siblings(sender, action=None, pid=None,

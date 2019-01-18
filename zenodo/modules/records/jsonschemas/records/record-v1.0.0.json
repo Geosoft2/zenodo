@@ -1,9 +1,9 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "additionalProperties": false,
+  "additionalProperties": true,
   "definitions": {
     "contributor_person_or_org": {
-      "additionalProperties": false,
+      "additionalProperties": true,
       "properties": {
         "affiliation": {
           "description": "Affiliation for the purpose of this specific record.",
@@ -460,6 +460,10 @@
         ],
         "type": "object"
       },
+      "type": "array"
+    },
+    "bbox": {
+      "description": "Bounding Box for spatial related extent of the file",
       "type": "array"
     },
     "communities": {
