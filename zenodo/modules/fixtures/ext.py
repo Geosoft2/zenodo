@@ -47,6 +47,7 @@ class ZenodoFixtures(object):
 
     def init_config(self, config):
         """Flask application initialization."""
+        print("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
         config.setdefault(
             'FIXTURES_FILES_LOCATION',
             join(sys.prefix, 'var/instance/data')
@@ -55,3 +56,7 @@ class ZenodoFixtures(object):
             'FIXTURES_ARCHIVE_LOCATION',
             join(sys.prefix, 'var/instance/archive')
         )
+        print (config.get('FIXTURES_ARCHIVE_LOCATION'))
+        #path_to_file=config['FIXTURES_FILES_LOCATION']
+        #print(path_to_file)
+        #return (path_to_file)

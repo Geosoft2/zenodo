@@ -27,6 +27,11 @@
 from __future__ import absolute_import, print_function
 
 import copy
+#new imports
+from extractTool.extractTool import getMetadata
+import sys
+from os.path import join
+
 
 from flask import current_app
 from invenio_pidrelations.contrib.records import index_siblings
@@ -64,6 +69,22 @@ def indexer_receiver(sender, json=None, record=None, index=None,
 
         pub_record = record.fetch_published()[1]
 
+        #creating parts of the path variable
+        id_val=(pub_record['_files'][0]['file_id'])
+        first_two=id_val[:2]
+        second_two=id_val[2:4]
+        last_part=id_val[4:]
+        
+        #folgendes Funktioniert unter der Voraussetzung, dass die Teilwerte der file id immer zweistellig
+        #sind, bzw. bleiben.
+        #weitere Voraussetzung: nutzug des Defaultspeicherplatzes.
+        #STEHT HIER NOCH AN DER FALSCHEN STELLE
+        first_part=join(sys.prefix, 'var/instance/data')
+        path=first_part+'/'+first_two+'/'+second_two+'/'+last_part+'/data'
+    
+        print("########################################################################################################")
+        getMetadata(path,'bbox', 'single', True)
+        print("########################################################################################################")
         # Temporarily set to draft mode to ensure that `clear` can be called
         json['_deposit']['status'] = 'draft'
         json.clear()
