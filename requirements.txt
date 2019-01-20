@@ -68,6 +68,7 @@ elasticsearch==2.4.1
 elasticsearch-dsl==2.2.0
 entrypoints==0.2.3
 enum34==1.1.6
+extractTool==0.4.1
 Flask==0.12.4
 Flask-Admin==1.5.3
 Flask-Alembic==2.0.1
