@@ -1,4 +1,5 @@
 {
+  "test_WERT": "string",
   "$schema": "http://json-schema.org/draft-04/schema#",
   "id": "http://zenodo.org/schemas/records/base-v1.0.0.json",
   "title": "Zenodo Base Record Schema v1.0.0",

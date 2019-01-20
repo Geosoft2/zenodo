@@ -66,7 +66,12 @@ def indexer_receiver(sender, json=None, record=None, index=None,
 
     if record['_deposit']['status'] == 'published':
         schema = json['$schema']
-
+        print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+        print(json)
+        print("------------------------------------------------------------------")
+        #print(record)
+        print(schema)
+        print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
         pub_record = record.fetch_published()[1]
 
         #creating parts of the path variable
@@ -83,7 +88,9 @@ def indexer_receiver(sender, json=None, record=None, index=None,
         path=first_part+'/'+first_two+'/'+second_two+'/'+last_part+'/data'
     
         print("########################################################################################################")
-        getMetadata(path,'bbox', 'single', True)
+        val=getMetadata(path,'bbox', 'single', True)
+        print("########################################################################################################")
+        print(val)
         print("########################################################################################################")
         # Temporarily set to draft mode to ensure that `clear` can be called
         json['_deposit']['status'] = 'draft'
@@ -94,12 +101,18 @@ def indexer_receiver(sender, json=None, record=None, index=None,
         json['_deposit']['status'] = 'published'
         json['$schema'] = schema
         json['_updated'] = pub_record.updated
+        print("44444444444444444444444444444444444444444444444444444444444444444444444444444444444444444")
+        print(pub_record.updated)
+        print("44444444444444444444444444444444444444444444444444444444444444444444444444444444444444444")
     else:
         json['_updated'] = record.updated
     json['_created'] = record.created
 
     # Compute filecount and total file size
     files = json.get('_files', [])
+    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11")
+    print(json)
+    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     json['filecount'] = len(files)
     json['size'] = sum([f.get('size', 0) for f in files])
 

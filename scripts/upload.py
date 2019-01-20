@@ -34,6 +34,7 @@ from six import BytesIO
 
 
 def upload(token, metadata, files, publish=True):
+    #print("UPLOAD_UPLOAD_UPLOAD_UPLOAD_UPLOAD")
     """Make an upload."""
     base_url = 'http://localhost:5000/api/deposit/depositions'
     auth = {

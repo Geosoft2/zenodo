@@ -936,6 +936,7 @@
     "description",
     "access_right"
   ],
+  "test_WERT": "string",
   "title": "Zenodo Record Schema v1.0.0",
   "type": "object"
 }

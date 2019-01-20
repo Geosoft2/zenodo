@@ -892,6 +892,7 @@
   "required": [
     "_deposit"
   ],
+  "test_WERT": "string",
   "title": "Zenodo Deposit Schema v1.0.0",
   "type": "object"
 }

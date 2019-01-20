@@ -47,7 +47,7 @@ class ZenodoFixtures(object):
 
     def init_config(self, config):
         """Flask application initialization."""
-        print("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
+        print("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
         config.setdefault(
             'FIXTURES_FILES_LOCATION',
             join(sys.prefix, 'var/instance/data')

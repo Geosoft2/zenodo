@@ -269,6 +269,7 @@
         "description": {
           "type": "string"
         },
+        "test_WERT":{"type":"string"},
         "keywords": {
           "type": "string"
         },

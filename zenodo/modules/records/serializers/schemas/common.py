@@ -50,6 +50,8 @@ from zenodo.modules.records.models import AccessRight
 
 from ...utils import is_deposit, is_record
 from ..fields import DOI as DOIField
+# HIER NEUEN IMPORT EINFUEGEN
+# in fields-ordner liegen viele .py dateien mit deserialise funktionen
 from ..fields import DateString, PersistentId, SanitizedHTML, SanitizedUnicode
 
 
@@ -268,6 +270,8 @@ class CommonMetadataSchemaV1(Schema, StrictKeysMixin, RefResolverMixin):
     """Common metadata schema."""
 
     doi = DOIField()
+    #NEUNEUNEUNEUNEUNEUNEUNEUNEU
+    test_WERT=fields.List(SanitizedUnicode())
     publication_date = DateString(required=True)
     title = SanitizedUnicode(required=True, validate=validate.Length(min=3))
     creators = fields.Nested(
