@@ -168,7 +168,7 @@
     },
     "bbox": {
       "description": "Bounding Box for spatial extent of the file",
-      "type": "object"
+      "type": "array"
     },
     "conceptrecid": {
       "description": "Invenio record identifier (integer).",

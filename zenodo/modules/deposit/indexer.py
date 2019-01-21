@@ -33,7 +33,7 @@ from invenio_pidrelations.contrib.records import index_siblings
 from invenio_pidrelations.contrib.versioning import PIDVersioning
 from invenio_pidrelations.serializers.utils import serialize_relations
 from invenio_pidstore.models import PersistentIdentifier
-import extractTool as et
+import extractTool.extractTool as et
 
 from .api import ZenodoDeposit
 
@@ -102,17 +102,15 @@ def indexer_receiver(sender, json=None, record=None, index=None,
 def extractor_receiver(sender, *args, **kwargs):
     """Connect to before_record_insert to extract spatial related metadata.
 
-    :type json: `invenio_records.api.Deposit`
     :param record: Indexed deposit record.
     :type record: `invenio_records.api.Deposit`
     """
     
     record = kwargs['record']
-    print(record)
-    record['description'] = 'schroedingers boundingbox - ist sie da ist sie nicht da?'
-    print(record['description'])
     data='/home/paulsenmann/Documents/gs2/geoJSON-dieGruppe1/110000Abgrabungen_Kreis_Kleve.geojson'
-    record['bbox'] = et.click_function(data, 'bbox', 'single', False)
+    bbox= et.click_function(data, 'bbox', 'single', False)
+    record['bbox'] = bbox  
+    print(record)
     print(record['bbox'])
 
 

@@ -268,7 +268,7 @@ class SubjectSchemaV1(IdentifierSchemaV1):
 class CommonMetadataSchemaV1(Schema, StrictKeysMixin, RefResolverMixin):
     """Common metadata schema."""
 
-    #bbox = SanitizedUnicode()
+    bbox = SanitizedUnicode()
     doi = DOIField()
     publication_date = DateString(required=True)
     title = SanitizedUnicode(required=True, validate=validate.Length(min=3))
