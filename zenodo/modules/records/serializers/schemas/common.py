@@ -44,6 +44,7 @@ from marshmallow import Schema, ValidationError, fields, post_dump, \
     post_load, pre_dump, pre_load, validate, validates, validates_schema
 from six.moves.urllib.parse import quote, urlparse
 from werkzeug.routing import BuildError
+import extractTool
 
 from zenodo.modules.records.config import ZENODO_RELATION_TYPES
 from zenodo.modules.records.models import AccessRight
@@ -267,6 +268,7 @@ class SubjectSchemaV1(IdentifierSchemaV1):
 class CommonMetadataSchemaV1(Schema, StrictKeysMixin, RefResolverMixin):
     """Common metadata schema."""
 
+    #bbox = SanitizedUnicode()
     doi = DOIField()
     publication_date = DateString(required=True)
     title = SanitizedUnicode(required=True, validate=validate.Length(min=3))
