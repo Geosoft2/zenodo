@@ -24,13 +24,13 @@ define([], function() {
   function providerNamesFilter() {
     return function(relationship) {
       var providerNames = [];
-      for (var linkHistory of relationship.metadata.History) {
-        for (var provider of linkHistory.LinkProvider) {
+      relationship.metadata.History.forEach(function(linkHistory) {
+        linkHistory.LinkProvider.forEach(function(provider) {
           if (!providerNames.includes(provider.Name)) {
             providerNames.push(provider.Name);
           }
-        }
-      }
+        });
+      });
       return providerNames.join(', ');
     };
   }
@@ -64,7 +64,7 @@ define([], function() {
             doiUrl = identifier.IDURL;
           }
         }
-      })
+      });
 
       return doiUrl || url;
     };
@@ -81,6 +81,24 @@ define([], function() {
         });
       }
       return doi;
+    };
+  }
+
+  function citationTitleFilter() {
+    return function(relationship) {
+      var title = relationship.metadata.Source.Title;
+      if (!title || title.length === 0) {
+        // Use the first identifier or the DOI
+        relationship.metadata.Source.Identifier.forEach(function(identifier) {
+          if (identifier.IDURL) {
+            title = identifier.IDScheme.toUpperCase() + ': ' + identifier.ID;
+            if (identifier.IDScheme == 'doi') {
+              title = 'DOI: ' + identifier.ID;
+            }
+          }
+        })
+      }
+      return title;
     };
   }
 
@@ -101,19 +119,19 @@ define([], function() {
   }
 
   function uniqueBadgeFilter() {
-    return function(identifiers) {
-      schemes = []
-      uniqueIdentifiers = []
-      if(identifiers) {
-        identifiers.forEach( function(identifier) {
+    return function (identifiers) {
+      schemes = [];
+      uniqueIdentifiers = [];
+      if (identifiers) {
+        identifiers.forEach(function (identifier) {
           if (identifier.IDURL && !schemes.includes(identifier.IDScheme)) {
             uniqueIdentifiers.push(identifier)
-            schemes.push(identifier.IDScheme)
+            schemes.push(identifier.IDScheme);
           }
         });
-       }
-        return uniqueIdentifiers;
-      };
+      }
+      return uniqueIdentifiers;
+    };
   }
 
   function missingTypesFilter() {
@@ -127,11 +145,16 @@ define([], function() {
 
       return missingTypes;
     };
-
   }
 
-  return { providerNamesFilter: providerNamesFilter, creatorNamesFilter: creatorNamesFilter,
-           doiUrlFilter: doiUrlFilter, doiFilter: doiFilter, logoTypeFilter: logoTypeFilter,
-           uniqueBadgeFilter: uniqueBadgeFilter, missingTypesFilter: missingTypesFilter
-         };
+  return {
+    providerNamesFilter: providerNamesFilter,
+    creatorNamesFilter: creatorNamesFilter,
+    doiUrlFilter: doiUrlFilter,
+    doiFilter: doiFilter,
+    citationTitleFilter: citationTitleFilter,
+    logoTypeFilter: logoTypeFilter,
+    uniqueBadgeFilter: uniqueBadgeFilter,
+    missingTypesFilter: missingTypesFilter,
+  };
 });
