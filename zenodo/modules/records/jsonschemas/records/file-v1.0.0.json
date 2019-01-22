@@ -48,6 +48,10 @@
             "description": "File type extension.",
             "type": "string"
           },
+          "bbox": {
+            "description": "Boundig Box for spatial related file expansion",
+            "type": "array"
+          },
           "version_id": {
             "description": "UUID of the ObjectVersion object.",
             "type": "string"
@@ -60,6 +64,7 @@
           "key",
           "size",
           "type",
+          "bbox",
           "version_id"
         ],
         "title": "File schema.",

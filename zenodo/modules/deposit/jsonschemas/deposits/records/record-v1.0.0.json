@@ -1,9 +1,9 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "additionalProperties": false,
+  "additionalProperties": true,
   "definitions": {
     "contributor_person_or_org": {
-      "additionalProperties": false,
+      "additionalProperties": true,
       "properties": {
         "affiliation": {
           "description": "Affiliation for the purpose of this specific record.",
@@ -452,6 +452,10 @@
     "conceptdoi": {
       "description": "Digital Object Identifier (DOI).",
       "type": "string"
+    },
+    "bbox": {
+      "description": "Boundig Box for spatial related file expansion",
+      "type": "array"
     },
     "conceptrecid": {
       "description": "Invenio record identifier (integer).",

@@ -5,7 +5,7 @@
   "definitions": {
     "person_or_org": {
       "type": "object",
-      "additionalProperties": false,
+      "additionalProperties": true,
       "properties": {
         "name": {
           "description": "Full name of person or organisation. Personal name format: family, given.",
@@ -177,6 +177,10 @@
     "conceptdoi": {
       "description": "Digital Object Identifier (DOI).",
       "type": "string"
+    },
+    "bbox": {
+      "description": "Bounding Box for spatial extent of the file",
+      "type": "object"
     },
     "resource_type": {
       "description": "Record resource type.",
