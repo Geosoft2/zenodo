@@ -33,10 +33,15 @@ from invenio_pidrelations.contrib.records import index_siblings
 from invenio_pidrelations.contrib.versioning import PIDVersioning
 from invenio_pidrelations.serializers.utils import serialize_relations
 from invenio_pidstore.models import PersistentIdentifier
-import extractTool.extractTool as et
+
+#CLI Tool imports
+from extractTool.extractTool import getMetadata
+import sys
+from os.path import join
 
 from .api import ZenodoDeposit
 
+bbox = []
 
 def indexer_receiver(sender, json=None, record=None, index=None,
                      **dummy_kwargs):
@@ -64,6 +69,21 @@ def indexer_receiver(sender, json=None, record=None, index=None,
         schema = json['$schema']
 
         pub_record = record.fetch_published()[1]
+        id_val=(pub_record['_files'][0]['file_id'])
+        first_two=id_val[:2]
+        second_two=id_val[2:4]
+        last_part=id_val[4:]
+        first_part=join(sys.prefix, 'var/instance/data')
+        path=first_part+'/'+first_two+'/'+second_two+'/'+last_part+'/data'
+
+        print("########################################################################################################")
+        
+        
+        bbox = getMetadata(path,'bbox', 'single', True)
+        # bbox = [[100.3, 233.4, 3.7, 44.5], [], []]
+        # print(a[0])
+        record['bbox'] = bbox
+        print(record['bbox'])
 
         # Temporarily set to draft mode to ensure that `clear` can be called
         json['_deposit']['status'] = 'draft'
@@ -105,10 +125,10 @@ def extractor_receiver(sender, *args, **kwargs):
     :param record: Indexed deposit record.
     :type record: `invenio_records.api.Deposit`
     """
-    
+
     record = kwargs['record']
-    data='/home/paulsenmann/Documents/gs2/geoJSON-dieGruppe1/110000Abgrabungen_Kreis_Kleve.geojson'
-    bbox= et.click_function(data, 'bbox', 'single', False)
+    # data='/home/paulsenmann/Documents/gs2/geoJSON-dieGruppe1/110000Abgrabungen_Kreis_Kleve.geojson'
+    # bbox= getMetadata(data, 'bbox', 'single', False)
     record['bbox'] = bbox  
     print(record)
     print(record['bbox'])
