@@ -36,6 +36,11 @@ from invenio_pidstore.models import PersistentIdentifier
 
 from .api import ZenodoDeposit
 
+#new imports
+from extractTool.extractTool import getMetadata
+import sys
+from os.path import join
+
 
 def indexer_receiver(sender, json=None, record=None, index=None,
                      **dummy_kwargs):
@@ -63,6 +68,22 @@ def indexer_receiver(sender, json=None, record=None, index=None,
         schema = json['$schema']
 
         pub_record = record.fetch_published()[1]
+
+        #CLI-Tool connection:
+        #creating parts of the path variable
+        id_val=(pub_record['_files'][0]['file_id'])
+        first_two=id_val[:2]
+        second_two=id_val[2:4]
+        last_part=id_val[4:]
+
+        first_part=join(sys.prefix, 'var/instance/data')
+        path=first_part+'/'+first_two+'/'+second_two+'/'+last_part+'/data'
+
+        print("########################################################################################################")
+        val=getMetadata(path,'bbox', 'single', True)
+        print("########################################################################################################")
+        print(val)
+        print("########################################################################################################")
 
         # Temporarily set to draft mode to ensure that `clear` can be called
         json['_deposit']['status'] = 'draft'
