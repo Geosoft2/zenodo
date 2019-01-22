@@ -38,7 +38,7 @@
     },
     "contributor_person_or_org": {
       "type": "object",
-      "additionalProperties": false,
+      "additionalProperties": true,
       "properties": {
         "name": {
           "description": "Full name of person or organisation. Personal name format: family, given.",
@@ -166,6 +166,10 @@
       "description": "Invenio record identifier (integer).",
       "type": "number"
     },
+    "bbox": {
+      "description": "Bounding Box for spatial extent of the file",
+      "type": "array"
+    },
     "conceptrecid": {
       "description": "Invenio record identifier (integer).",
       "type": "string"
@@ -178,14 +182,10 @@
       "description": "Digital Object Identifier (DOI).",
       "type": "string"
     },
-    "bbox": {
-      "description": "Bounding Box for spatial extent of the file",
-      "type": "object"
-    },
     "resource_type": {
       "description": "Record resource type.",
       "type": "object",
-      "additionalProperties": false,
+      "additionalProperties": true,
       "properties": {
         "type": {
           "description": "General resource type.",
@@ -238,7 +238,7 @@
       "type": "array",
       "items": {
         "type": "object",
-        "additionalProperties": false,
+        "additionalProperties": true,
         "properties": {
           "term": {
             "description": "Subject term value.",
@@ -334,7 +334,7 @@
       "type": "array",
       "items": {
         "type": "object",
-        "additionalProperties": false,
+        "additionalProperties": true,
         "properties": {
           "identifier": {
             "description": "Identifier of research output.",
@@ -364,7 +364,7 @@
       "items": {
         "title": "Reference",
         "type": "object",
-        "additionalProperties": false,
+        "additionalProperties": true,
         "properties": {
           "raw_reference": {
             "type": "string"
@@ -375,7 +375,7 @@
     "journal": {
       "description": "Journal in which this record is published.",
       "type": "object",
-      "additionalProperties": false,
+      "additionalProperties": true,
       "properties": {
         "issue": {
           "title": "Journal issue",
@@ -445,7 +445,7 @@
     "part_of": {
       "description": "For parts of books and reports.",
       "type": "object",
-      "additionalProperties": false,
+      "additionalProperties": true,
       "properties": {
         "title": {
           "title": "Title",
@@ -459,7 +459,7 @@
     },
     "imprint": {
       "type": "object",
-      "additionalProperties": false,
+      "additionalProperties": true,
       "properties": {
         "publisher": {
           "type": "string"
@@ -474,7 +474,7 @@
     },
     "thesis": {
       "type": "object",
-      "additionalProperties": false,
+      "additionalProperties": true,
       "properties": {
         "university": {
           "description": "Awarding university in case of a thesis.",
@@ -499,7 +499,7 @@
     "_oai": {
       "description": "OAI-PMH specific information.",
       "type": "object",
-      "additionalProperties": false,
+      "additionalProperties": true,
       "properties": {
         "id": {
           "description": "OAI-PMH record identifier.",
@@ -521,14 +521,14 @@
     "_internal": {
       "description": "Metadata for internal use only.",
       "type": "object",
-      "additionalProperties": false,
+      "additionalProperties": true,
       "properties": {
         "comments": {
           "description": "Comments for internal purposes.",
           "type": "array",
           "items": {
             "type": "object",
-            "additionalProperties": false,
+            "additionalProperties": true,
             "properties": {
               "timestamp": {
                 "description": "ISO8601 formatted date time stamp.",
@@ -553,7 +553,7 @@
         "source": {
           "description": "Information related to initial source of acquisition.",
           "type": "object",
-          "additionalProperties": false,
+          "additionalProperties": true,
           "properties": {
             "legacy_deposit_id": {
               "anyOf": [
@@ -569,7 +569,7 @@
               "type": "array",
               "items": {
                 "type": "object",
-                "additionalProperties": false,
+                "additionalProperties": true,
                 "properties": {
                   "role": {
                     "type": "string",

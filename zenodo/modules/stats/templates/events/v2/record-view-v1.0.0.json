@@ -67,10 +67,6 @@
           "type": "string",
           "index": "not_analyzed"
         },
-        "bbox": {
-          "type": "object",
-          "index": "not_analyzed"
-        },
         "resource_type": {
           "type": "object"
         },

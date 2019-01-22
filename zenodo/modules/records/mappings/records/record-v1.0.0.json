@@ -135,7 +135,7 @@
           "index": "not_analyzed"
         },
         "bbox": {
-          "type": "string",
+          "type": "object",
           "index": "not_analyzed"
         },
         "conceptdoi": {

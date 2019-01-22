@@ -56,10 +56,6 @@
           "type": "string",
           "index": "not_analyzed"
         },
-        "bbox": {
-          "type": "array",
-          "index": "not_analyzed"
-        },
         "conceptrecid": {
           "type": "string",
           "index": "not_analyzed"
