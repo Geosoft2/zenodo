@@ -72,19 +72,19 @@ def indexer_receiver(sender, json=None, record=None, index=None,
 
         #CLI-Tool connection:
         #creating parts of the path variable
-        id_val=(pub_record['_files'][0]['file_id'])
-        first_two=id_val[:2]
-        second_two=id_val[2:4]
-        last_part=id_val[4:]
+        # id_val=(pub_record['_files'][0]['file_id'])
+        # first_two=id_val[:2]
+        # second_two=id_val[2:4]
+        # last_part=id_val[4:]
 
-        first_part=join(sys.prefix, 'var/instance/data')
-        path=first_part+'/'+first_two+'/'+second_two+'/'+last_part+'/data'
+        # first_part=join(sys.prefix, 'var/instance/data')
+        # path=first_part+'/'+first_two+'/'+second_two+'/'+last_part+'/data'
 
-        print("########################################################################################################")
-        val=getMetadata(path,'bbox', 'single', True)
-        print("########################################################################################################")
-        print(val)
-        print("########################################################################################################")
+        # print("########################################################################################################")
+        # val=getMetadata(path,'bbox', 'single', True)
+        # print("########################################################################################################")
+        # print(val)
+        # print("########################################################################################################")
 
         # Temporarily set to draft mode to ensure that `clear` can be called
         json['_deposit']['status'] = 'draft'
@@ -128,28 +128,42 @@ def extractor_receiver(sender, *args, **kwargs):
     """
     
     record = kwargs['record']
-<<<<<<< HEAD
     print("=============================================================================")
     print(record)
     print("=============================================================================")
-    record['description'] = 'schroedingers boundingbox - ist sie da ist sie nicht da?'
+    #record['description'] = 'schroedingers boundingbox - ist sie da ist sie nicht da?'
     record['bbox']=[1,2,3,4]
     print("????????????????????????????????????????????????????????????????")
     print(record)
     print("??????????????????????????????????????????????????????????????????")
-    print(record['description'])
+    #print(record['description'])
+    #print(record[])
+    print("5666665656565656565656565656")
+    try:
+        print(record['_files'][0]['file_id'])
+        id_val=(record['_files'][0]['file_id'])
+        first_two=id_val[:2]
+        second_two=id_val[2:4]
+        last_part=id_val[4:]
+
+        first_part=join(sys.prefix, 'var/instance/data')
+        path=first_part+'/'+first_two+'/'+second_two+'/'+last_part+'/data'
+
+        print("########################################################################################################")
+        val=getMetadata(path,'bbox', 'single', True)
+        print("########################################################################################################")
+        print(val)
+        record['bbox']=val
+        print("########################################################################################################")
+
+    except Exception as e:
+        print (e)
+    print("5666665656565656565656565656")
     print("2222222222222222222222222222222222222222222222222222222222222222222222222222222")
     #getMetadata('record', 'bbox', 'single', False)
     print("4444444444444444444444444444444444444444444444444444444")
     print(record['bbox'])
     print("44444444444444444444444444444444444444444444444444444444444")
-=======
-    data='/home/paulsenmann/Documents/gs2/geoJSON-dieGruppe1/110000Abgrabungen_Kreis_Kleve.geojson'
-    bbox= et.click_function(data, 'bbox', 'single', False)
-    record['bbox'] = bbox  
-    print(record)
-    print(record['bbox'])
->>>>>>> 8d9cf11da8ba4bf9f5949ed1e3de4cae0be3bfef
 
 
 

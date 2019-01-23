@@ -31,7 +31,7 @@
           {{ _("Suggestions") }}
       </div>
       <div class="col-sm-11" style="margin-top: 5px;">
-       Here you can find similar data to your dataset
+       Here you can find data that is similar data to your dataset
       </div>  
       <div class="collapse in" id="collapseTwo">
       {%- if files -%}
@@ -44,9 +44,14 @@
         <tbody>
         {%- for file in files|sort(attribute='key') -%}
         {%- set file_url = url_for('invenio_records_ui.recid_files', pid_value=pid.pid_value, filename=file.key, download=1) %}
+        {%- set testval = record.publication_date%}
+        {%- set testval = record.bbox%}
           <tr>
             <td>
               <a class="filename" href="{{file_url}}">{{ file.key }}</a>
+              <a class="">{{record}}</a>
+              <a class="">{{bbox}}</a>
+
             </td>
           </tr>
         {%- endfor -%}
