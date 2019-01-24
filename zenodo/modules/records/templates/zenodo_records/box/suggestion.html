@@ -32,7 +32,19 @@
       </div>
       <div class="col-sm-11" style="margin-top: 5px;">
        Here you can find data that is similar data to your dataset
-      </div>  
+      </div> 
+      <script>
+        console.log("drin")
+        document.getElementById("demo").innerHTML = "hallo welt"
+        //$.get( "/records/<recid>/similar", function( data ) {
+        //alert( "Data Loaded: " + data );
+        //});
+
+      </script>
+
+     
+
+
       <div class="collapse in" id="collapseTwo">
       {%- if files -%}
         <table class="table table-striped" >
@@ -45,13 +57,17 @@
         {%- for file in files|sort(attribute='key') -%}
         {%- set file_url = url_for('invenio_records_ui.recid_files', pid_value=pid.pid_value, filename=file.key, download=1) %}
         {%- set testval = record.publication_date%}
-        {%- set testval = record.bbox%}
+        {%- set bbox = record.bbox%}
+        {%- set id = record.recid%}
+        {%- set sim = record.similar%}
           <tr>
             <td>
               <a class="filename" href="{{file_url}}">{{ file.key }}</a>
               <a class="">{{record}}</a>
               <a class="">{{bbox}}</a>
-
+              <a class="">{{'sim'}}</a>
+              <a class="">{{id}}</a>
+              <p id="demo"></p>
             </td>
           </tr>
         {%- endfor -%}
