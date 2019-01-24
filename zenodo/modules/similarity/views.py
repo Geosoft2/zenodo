@@ -33,6 +33,8 @@ from zenodo.modules.records.fetchers import zenodo_record_fetcher
 from zenodo.modules.records.api import ZenodoRecord
 from zenodo.modules.stats.utils import extract_event_record_metadata, fetch_record, fetch_record_file
 
+from extractTool.similar import calculateScore
+
 blueprint = Blueprint(
     'zenodo_similarity',
     __name__,
@@ -79,34 +81,57 @@ def similar(recid):
     # get actual record, MAYBE with a combination of zenodo_record_fetcher and ZenodoRecord.get_record(recid.object_uuid)
     record = fetch_record(recid)
     bbox = record[1]['bbox'][0]
-    rrid = record[1]['recid'])
-    print("###################################")
+    rrid = record[1]['recid']
+    bboxList = list()
     for x in range(1, rrid):
         try:
-            list(record[1]['bbox'][0])
+            record = fetch_record(x)
+            if list(record[1]['bbox'][0]) != None and list(record[1]['bbox'][0]) != [] and type(record[1]['bbox'][0]) is list:
+                bboxList.append([record[1]['recid'],record[1]['bbox'][0]])
         except Exception:
-            (list(record[1]['bbox'][0]) == None) or (list(record[1]['bbox'][0]) == [])
-
+            u = record[1]['recid']
+    
+    print(bboxList)
+    print('######################################################')
+    bbox1 = bboxList[0][1]
+    print("1")
+    print(bbox1)
+    bbox2 = bboxList[1][1]
+    print("2")
+    print(bbox2)
+    bbox3 = bboxList[2][1]
+    print("3")
+    print(bbox3)
+    bbox4 = bboxList[3][1]
+    print("4")
+    print(bbox4)
+    simList = list()
+    print('######################################################')
+    for x in range(0, 3):
+        simList.append([calculateScore(bboxList[x][1],bboxList[3][1]),bboxList[x][0]])
+        print(x+1)
+        print(". Durchlauf")
+        print(simList)
+    print('######################################################')
+    print(simList)
+    sortSimList = sorted(simList, key=lambda x: x[0])
+    print(sortSimList)   
     return Response(
         json.dumps({
             'record': recid,
             'similar': [
                 {
-                    'id': '2',
-                    'similarity': bbox
+                    'id': sortSimList[0][1],
+                    'similarity': sortSimList[0][0]
                 },
                 {
-                    'id': '4',
-                    'similarity': bbox
+                    'id': sortSimList[1][1],
+                    'similarity': sortSimList[1][0]
                 },
                 {
-                    'id': '6',
-                    'similarity': bbox
+                    'id': sortSimList[2][1],
+                    'similarity': sortSimList[2][0]
                 },
-                {
-                    'id': '8',
-                    'similarity': bbox
-                }
             ]
         },
             **_format_args()
