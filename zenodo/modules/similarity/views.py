@@ -31,6 +31,7 @@ from flask import Blueprint, Response, current_app, json, request, url_for, json
 
 from zenodo.modules.records.fetchers import zenodo_record_fetcher
 from zenodo.modules.records.api import ZenodoRecord
+from zenodo.modules.stats.utils import extract_event_record_metadata, fetch_record, fetch_record_file
 
 blueprint = Blueprint(
     'zenodo_similarity',
@@ -40,7 +41,6 @@ blueprint = Blueprint(
 
 def _format_args():
     """Get JSON dump indentation and separates."""
-    # Ensure we can run outside a application/request context.
     try:
         pretty_format = \
             current_app.config['JSONIFY_PRETTYPRINT_REGULAR'] and \
@@ -76,14 +76,16 @@ def index():
 @blueprint.route('/records/<recid>/similar', methods=['GET'])
 def similar(recid):
     """Get similar records."""
-
     # get actual record, MAYBE with a combination of zenodo_record_fetcher and ZenodoRecord.get_record(recid.object_uuid)
-    # print(recid)
-
-    # recordi = ZenodoRecord.get_record(recid)
-
-    # print(recordi)
-
+    record = fetch_record(recid)
+    bbox = record[1]['bbox'][0]
+    rrid = record[1]['recid'])
+    print("###################################")
+    for x in range(1, rrid):
+        try:
+            list(record[1]['bbox'][0])
+        except Exception:
+            (list(record[1]['bbox'][0]) == None) or (list(record[1]['bbox'][0]) == [])
 
     return Response(
         json.dumps({
@@ -91,19 +93,19 @@ def similar(recid):
             'similar': [
                 {
                     'id': '2',
-                    'similarity': recid
+                    'similarity': bbox
                 },
                 {
                     'id': '4',
-                    'similarity': recid
+                    'similarity': bbox
                 },
                 {
                     'id': '6',
-                    'similarity': recid
+                    'similarity': bbox
                 },
                 {
                     'id': '8',
-                    'similarity': recid
+                    'similarity': bbox
                 }
             ]
         },
@@ -111,26 +113,3 @@ def similar(recid):
         ),
         mimetype='application/json',
     )
-
-
-@blueprint.route(
-    '/otherendpoint/<someidentifier>/',
-    methods=['GET']
-)
-def testendpoint(someidentifier):
-    """Return jsonify output and log input."""
-    print('id: %s' % someidentifier)
-
-    values = request.args.to_dict()
-    current_app.logger.warning('not really a warning', extra=values)
-    params = request.args.getlist('myparams')
-    for p in params:
-        current_app.logger.debug(u'my param: {}', p)
-    #q = request.args.get('q', '')
-    #limit = int(request.args.get('limit', '5').lower())
-    #langs = suggest_language(q, limit=limit)
-    #langs = [{'code': l.alpha_3, 'name': l.name} for l in langs]
-    d = {
-        'data': [1, 2, 3]
-    }
-    return jsonify(d)

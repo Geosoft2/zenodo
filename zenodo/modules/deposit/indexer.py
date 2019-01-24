@@ -108,20 +108,24 @@ def extractor_receiver(sender, *args, **kwargs):
     :param record: Indexed deposit record.
     :type record: `invenio_records.api.Deposit`
     """
-
     record = kwargs['record']
     print(record)
-    id_val=(record[0]['file_id'])
-    first_two=id_val[:2]
-    second_two=id_val[2:4]
-    last_part=id_val[4:]
-    first_part=join(sys.prefix, 'var/instance/data')
-    path=first_part+'/'+first_two+'/'+second_two+'/'+last_part+'/data'
-    print("########################################################################################################")
-    bbox = getMetadata(path,'bbox', 'single', True)
-    record['bbox'] = bbox
-    print(record['bbox'])
-
+    try:
+        print(record['_files'][0]['file_id'])
+        id_val=(record['_files'][0]['file_id'])
+        first_two=id_val[:2]
+        second_two=id_val[2:4]
+        last_part=id_val[4:]
+        first_part=join(sys.prefix, 'var/instance/data')
+        path=first_part+'/'+first_two+'/'+second_two+'/'+last_part+'/data'
+        print("########################################################################################################")
+        val=getMetadata(path,'bbox', 'single', True)
+        print("########################################################################################################")
+        print(val)
+        record['bbox']=val
+        print("########################################################################################################")
+    except Exception as e:
+        print (e)
 
 def index_versioned_record_siblings(sender, action=None, pid=None,
                                     deposit=None):
