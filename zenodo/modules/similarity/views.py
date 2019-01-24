@@ -38,7 +38,6 @@ blueprint = Blueprint(
     url_prefix='',
 )
 
-
 def _format_args():
     """Get JSON dump indentation and separates."""
     # Ensure we can run outside a application/request context.
@@ -60,11 +59,31 @@ def _format_args():
             separators=(',', ':'),
         )
 
+@blueprint.route('/similarity/', methods=['GET'])
+def index():
+    """Demo endpoint."""
+    return Response(
+        json.dumps({
+            'similarity': {
+                'geosoftware2': 'rocks'
+            }
+        },
+            **_format_args()
+        ),
+        mimetype='application/json',
+    )
+
 @blueprint.route('/records/<recid>/similar', methods=['GET'])
 def similar(recid):
     """Get similar records."""
 
     # get actual record, MAYBE with a combination of zenodo_record_fetcher and ZenodoRecord.get_record(recid.object_uuid)
+    # print(recid)
+
+    # recordi = ZenodoRecord.get_record(recid)
+
+    # print(recordi)
+
 
     return Response(
         json.dumps({
@@ -72,19 +91,19 @@ def similar(recid):
             'similar': [
                 {
                     'id': '2',
-                    'similarity': 0.9
+                    'similarity': recid
                 },
                 {
                     'id': '4',
-                    'similarity': 0.85
+                    'similarity': recid
                 },
                 {
                     'id': '6',
-                    'similarity': 0.4
+                    'similarity': recid
                 },
                 {
                     'id': '8',
-                    'similarity': 0.1
+                    'similarity': recid
                 }
             ]
         },

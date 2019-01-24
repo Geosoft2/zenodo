@@ -41,8 +41,6 @@ from os.path import join
 
 from .api import ZenodoDeposit
 
-bbox = []
-
 def indexer_receiver(sender, json=None, record=None, index=None,
                      **dummy_kwargs):
     """Connect to before_record_index signal to transform record for ES.
@@ -69,21 +67,6 @@ def indexer_receiver(sender, json=None, record=None, index=None,
         schema = json['$schema']
 
         pub_record = record.fetch_published()[1]
-        id_val=(pub_record['_files'][0]['file_id'])
-        first_two=id_val[:2]
-        second_two=id_val[2:4]
-        last_part=id_val[4:]
-        first_part=join(sys.prefix, 'var/instance/data')
-        path=first_part+'/'+first_two+'/'+second_two+'/'+last_part+'/data'
-
-        print("########################################################################################################")
-        
-        
-        bbox = getMetadata(path,'bbox', 'single', True)
-        # bbox = [[100.3, 233.4, 3.7, 44.5], [], []]
-        # print(a[0])
-        record['bbox'] = bbox
-        print(record['bbox'])
 
         # Temporarily set to draft mode to ensure that `clear` can be called
         json['_deposit']['status'] = 'draft'
@@ -127,12 +110,17 @@ def extractor_receiver(sender, *args, **kwargs):
     """
 
     record = kwargs['record']
-    # data='/home/paulsenmann/Documents/gs2/geoJSON-dieGruppe1/110000Abgrabungen_Kreis_Kleve.geojson'
-    # bbox= getMetadata(data, 'bbox', 'single', False)
-    record['bbox'] = bbox  
     print(record)
+    id_val=(record[0]['file_id'])
+    first_two=id_val[:2]
+    second_two=id_val[2:4]
+    last_part=id_val[4:]
+    first_part=join(sys.prefix, 'var/instance/data')
+    path=first_part+'/'+first_two+'/'+second_two+'/'+last_part+'/data'
+    print("########################################################################################################")
+    bbox = getMetadata(path,'bbox', 'single', True)
+    record['bbox'] = bbox
     print(record['bbox'])
-
 
 
 def index_versioned_record_siblings(sender, action=None, pid=None,
