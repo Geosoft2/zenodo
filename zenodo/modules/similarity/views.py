@@ -31,6 +31,9 @@ from flask import Blueprint, Response, current_app, json, request, url_for, json
 
 from zenodo.modules.records.fetchers import zenodo_record_fetcher
 from zenodo.modules.records.api import ZenodoRecord
+from zenodo.modules.stats.utils import extract_event_record_metadata, fetch_record, fetch_record_file
+
+from extractTool.similar import calculateScore
 
 blueprint = Blueprint(
     'zenodo_similarity',
@@ -38,10 +41,8 @@ blueprint = Blueprint(
     url_prefix='',
 )
 
-
 def _format_args():
     """Get JSON dump indentation and separates."""
-    # Ensure we can run outside a application/request context.
     try:
         pretty_format = \
             current_app.config['JSONIFY_PRETTYPRINT_REGULAR'] and \
@@ -60,58 +61,80 @@ def _format_args():
             separators=(',', ':'),
         )
 
-@blueprint.route('/records/<recid>/similar', methods=['GET'])
-def similar(recid):
-    """Get similar records."""
-
-    # get actual record, MAYBE with a combination of zenodo_record_fetcher and ZenodoRecord.get_record(recid.object_uuid)
-
+@blueprint.route('/similarity/', methods=['GET'])
+def index():
+    """Demo endpoint."""
     return Response(
         json.dumps({
-            'record': recid,
-            'similar': [
-                {
-                    'id': '2',
-                    'similarity': 0.9
-                },
-                {
-                    'id': '4',
-                    'similarity': 0.85
-                },
-                {
-                    'id': '6',
-                    'similarity': 0.4
-                },
-                {
-                    'id': '8',
-                    'similarity': 0.1
-                }
-            ]
+            'similarity': {
+                'geosoftware2': 'rocks'
+            }
         },
             **_format_args()
         ),
         mimetype='application/json',
     )
 
-
-@blueprint.route(
-    '/otherendpoint/<someidentifier>/',
-    methods=['GET']
-)
-def testendpoint(someidentifier):
-    """Return jsonify output and log input."""
-    print('id: %s' % someidentifier)
-
-    values = request.args.to_dict()
-    current_app.logger.warning('not really a warning', extra=values)
-    params = request.args.getlist('myparams')
-    for p in params:
-        current_app.logger.debug(u'my param: {}', p)
-    #q = request.args.get('q', '')
-    #limit = int(request.args.get('limit', '5').lower())
-    #langs = suggest_language(q, limit=limit)
-    #langs = [{'code': l.alpha_3, 'name': l.name} for l in langs]
-    d = {
-        'data': [1, 2, 3]
-    }
-    return jsonify(d)
+@blueprint.route('/records/<recid>/similar', methods=['GET'])
+def similar(recid):
+    """Get similar records."""
+    # get actual record, MAYBE with a combination of zenodo_record_fetcher and ZenodoRecord.get_record(recid.object_uuid)
+    record = fetch_record(recid)
+    bbox = record[1]['bbox'][0]
+    rrid = record[1]['recid']
+    bboxList = list()
+    for x in range(1, rrid):
+        try:
+            record = fetch_record(x)
+            if list(record[1]['bbox'][0]) != None and list(record[1]['bbox'][0]) != [] and type(record[1]['bbox'][0]) is list:
+                bboxList.append([record[1]['recid'],record[1]['bbox'][0]])
+        except Exception:
+            u = record[1]['recid']
+    
+    print(bboxList)
+    print('######################################################')
+    bbox1 = bboxList[0][1]
+    print("1")
+    print(bbox1)
+    bbox2 = bboxList[1][1]
+    print("2")
+    print(bbox2)
+    bbox3 = bboxList[2][1]
+    print("3")
+    print(bbox3)
+    bbox4 = bboxList[3][1]
+    print("4")
+    print(bbox4)
+    simList = list()
+    print('######################################################')
+    for x in range(0, 3):
+        simList.append([calculateScore(bboxList[x][1],bboxList[3][1]),bboxList[x][0]])
+        print(x+1)
+        print(". Durchlauf")
+        print(simList)
+    print('######################################################')
+    print(simList)
+    sortSimList = sorted(simList, key=lambda x: x[0])
+    print(sortSimList)   
+    return Response(
+        json.dumps({
+            'record': recid,
+            'similar': [
+                {
+                    'id': sortSimList[0][1],
+                    'similarity': sortSimList[0][0]
+                },
+                {
+                    'id': sortSimList[1][1],
+                    'similarity': sortSimList[1][0]
+                },
+                {
+                    'id': sortSimList[2][1],
+                    'similarity': sortSimList[2][0]
+                },
+            ]
+        },
+            **_format_args()
+        ),
+        mimetype='application/json',
+    )

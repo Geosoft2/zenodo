@@ -240,7 +240,7 @@ setup(
             'zenodo_search_ui = zenodo.modules.search_ui.views:blueprint',
             'zenodo_theme = zenodo.modules.theme.views:blueprint',
             'zenodo_spam = zenodo.modules.spam.views:blueprint',
-            'zenodo_sitemap = zenodo.modules.sitemap.views:blueprint'
+            'zenodo_sitemap = zenodo.modules.sitemap.views:blueprint',
         ],
         'invenio_base.api_blueprints': [
             'zenodo_rest = zenodo.modules.rest.views:blueprint',

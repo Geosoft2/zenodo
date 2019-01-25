@@ -33,15 +33,13 @@ from invenio_pidrelations.contrib.records import index_siblings
 from invenio_pidrelations.contrib.versioning import PIDVersioning
 from invenio_pidrelations.serializers.utils import serialize_relations
 from invenio_pidstore.models import PersistentIdentifier
-import extractTool.extractTool as et
 
-from .api import ZenodoDeposit
-
-#new imports
+#CLI Tool imports
 from extractTool.extractTool import getMetadata
 import sys
 from os.path import join
 
+from .api import ZenodoDeposit
 
 def indexer_receiver(sender, json=None, record=None, index=None,
                      **dummy_kwargs):
@@ -126,7 +124,6 @@ def extractor_receiver(sender, *args, **kwargs):
     :param record: Indexed deposit record.
     :type record: `invenio_records.api.Deposit`
     """
-    
     record = kwargs['record']
     print("=============================================================================")
     print(record)
@@ -155,17 +152,8 @@ def extractor_receiver(sender, *args, **kwargs):
         print(val)
         record['bbox']=val
         print("########################################################################################################")
-
     except Exception as e:
         print (e)
-    print("5666665656565656565656565656")
-    print("2222222222222222222222222222222222222222222222222222222222222222222222222222222")
-    #getMetadata('record', 'bbox', 'single', False)
-    print("4444444444444444444444444444444444444444444444444444444")
-    print(record['bbox'])
-    print("44444444444444444444444444444444444444444444444444444444444")
-
-
 
 def index_versioned_record_siblings(sender, action=None, pid=None,
                                     deposit=None):

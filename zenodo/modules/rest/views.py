@@ -77,7 +77,9 @@ def index():
                 'licenses': url_for(
                     'invenio_records_rest.od_lic_list', _external=True),
                 'records': url_for(
-                    'invenio_records_rest.recid_list', _external=True), }
+                    'invenio_records_rest.recid_list', _external=True), 
+                'similarity': 'http://localhost:5000/api/similarity/',    
+                }
             },
             **_format_args()
         ),
