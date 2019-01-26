@@ -35,6 +35,8 @@ from zenodo.modules.stats.utils import extract_event_record_metadata, fetch_reco
 
 from extractTool.similar import calculateScore
 
+import requests
+
 blueprint = Blueprint(
     'zenodo_similarity',
     __name__,
@@ -78,61 +80,132 @@ def index():
 @blueprint.route('/records/<recid>/similar', methods=['GET'])
 def similar(recid):
     """Get similar records."""
-    # get actual record, MAYBE with a combination of zenodo_record_fetcher and ZenodoRecord.get_record(recid.object_uuid)
+    # get actual record with fetcher
     record = fetch_record(recid)
-    bbox = record[1]['bbox'][0]
+
+    # print('################ record fetch try #########################')
+    # print(type(record[1]['bbox']))
+    # print('################ record fetch try #########################')    
+
+    # variable of the record id for future use in loops as the parameter wont do
     rrid = record[1]['recid']
-    bboxList = list()
-    for x in range(1, rrid):
-        try:
-            record = fetch_record(x)
-            if list(record[1]['bbox'][0]) != None and list(record[1]['bbox'][0]) != [] and type(record[1]['bbox'][0]) is list:
-                bboxList.append([record[1]['recid'],record[1]['bbox'][0]])
-        except Exception:
-            u = record[1]['recid']
     
-    print(bboxList)
-    print('######################################################')
-    bbox1 = bboxList[0][1]
-    print("1")
-    print(bbox1)
-    bbox2 = bboxList[1][1]
-    print("2")
-    print(bbox2)
-    bbox3 = bboxList[2][1]
-    print("3")
-    print(bbox3)
-    bbox4 = bboxList[3][1]
-    print("4")
-    print(bbox4)
+    # making the url for the api request fetching the maximum of 1000 records
+    recordlistURL = url_for('invenio_records_rest.recid_list', _external=True)
+    recordlist1000URL = recordlistURL+'?sort=mostrecent&page=1&size=1000'
+    
+    # api request to fetch the metadata of the latest 1000 records from api/records/
+    response = requests.get(recordlist1000URL)
+    recordlist_raw = response.json()
+    
+    # prints for navigation purpose
+    # print('################ bbox fetch try #########################')
+    # print(recordlist_raw['hits']['hits'][0]['metadata']['bbox'])
+    # print('################ bbox fetch try #########################')
+
+    # print('################ id fetch try #########################')
+    # print(recordlist_raw['hits']['hits'][0]['id'])
+    # print('################ id fetch try #########################')
+
+    # print('################ name fetch try #########################')
+    # print(recordlist_raw['hits']['hits'][0]['metadata']['title'])
+    # print('################ id fetch try #########################')
+
+    # print('################ total file count fetch try #########################')
+    # print(recordlist_raw['hits']['total'])
+    # print('################ total file fetch try #########################')
+
+    total_files = recordlist_raw['hits']['total']
+    
+    # new list object to go on the record layer
+    recordlist = recordlist_raw['hits']['hits']
+    
+    # print('################## record-list #######################')
+    # print(recordlist)
+    # print('################## record-list #######################')
+
+    bboxList = list()
+
+    for i in range(0, total_files):
+        try:
+            rid = recordlist[i]['id']
+            irecord = fetch_record(rid)
+            rname = recordlist[i]['metadata']['title']
+            rbbox = irecord[1]['bbox']
+            if rbbox != None and rbbox != [] and type(rbbox) == list and type(rbbox[0]) == list and rid != rrid:
+                bboxList.append([rbbox,rid,rname])
+        except Exception:
+            print('no valid bounding box found in record '+str(rid))
+    
+    # print('################## bbox-list #######################')
+    # print(bboxList)
+    # print('################## bbox-list #######################')
+    
     simList = list()
-    print('######################################################')
-    for x in range(0, 3):
-        simList.append([calculateScore(bboxList[x][1],bboxList[3][1]),bboxList[x][0]])
-        print(x+1)
-        print(". Durchlauf")
-        print(simList)
-    print('######################################################')
-    print(simList)
-    sortSimList = sorted(simList, key=lambda x: x[0])
-    print(sortSimList)   
+    for bboxItem in bboxList:
+        simList.append([calculateScore(bboxItem[0][0],record[1]['bbox'][0]),bboxItem[0], bboxItem[1], bboxItem[2]])
+    
+    # print('################## sim-list #######################')
+    # print(simList)
+    # print('################## sim-list #######################')
+
+    sortSimList = sorted(simList, key=lambda x: x[0], reverse=True)
+
+    print('################## sortsim-list #######################')
+    print(sortSimList)
+    print('################## sortsim-list #######################')
+
+    id_list = list()
+    name_list = list()
+    bbox_list = list()
+    sim_value_list = list()
+
+    for listItem in sortSimList:
+        id_list.append(listItem[2])
+        name_list.append(listItem[3])
+        bbox_list.append(listItem[1])
+        sim_value_list.append(listItem[0])
+
+    print('################## id-list #######################')
+    print(id_list)
+    print('################## id-list #######################')
+
+    print('################## name-list #######################')
+    print(name_list)
+    print('################## name-list #######################')
+
+    print('################## bbox-list #######################')
+    print(bbox_list)
+    print('################## bbox-list #######################')
+
+    print('################## sim-list #######################')
+    print(sim_value_list)
+    print('################## sim-list #######################')
+
+    dic = {
+        "id": id_list,
+        "name": name_list,
+        "bbox": bbox_list,
+        "sim_value": sim_value_list
+    }
+
+    json_dict = {}
+    data = []
+
+    json_sortSimList = list()
+    for ljson in sortSimList:
+        json_sortSimList.append("'sim_value': "+str(ljson[0])+", 'bbox': "+str(ljson[1])+", 'id': "+str(ljson[2])+", 'name': "+str(ljson[3]))
+    
+    json_data = json.dumps(json_sortSimList)
+    print('################## json_data #######################')
+    print(json_data)
+    print(type(json_data))
+    print('################## json_data #######################')
+    
     return Response(
         json.dumps({
-            'record': recid,
-            'similar': [
-                {
-                    'id': sortSimList[0][1],
-                    'similarity': sortSimList[0][0]
-                },
-                {
-                    'id': sortSimList[1][1],
-                    'similarity': sortSimList[1][0]
-                },
-                {
-                    'id': sortSimList[2][1],
-                    'similarity': sortSimList[2][0]
-                },
-            ]
+            'record': rrid,
+            'similar': json_data,
         },
             **_format_args()
         ),
