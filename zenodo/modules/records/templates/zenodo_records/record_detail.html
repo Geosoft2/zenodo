@@ -23,6 +23,7 @@
 -#}
 
 {%- extends config.RECORDS_UI_BASE_TEMPLATE %}
+{% from "invenio_userprofiles/settings/_macros.html" import render_field %}
 
 {%- from "zenodo_records/macros/accessright.html" import accessright_label -%}
 {%- from "zenodo_records/macros/objecttype.html" import objecttype_label -%}
@@ -83,6 +84,10 @@
       {%- set files = record.files if current_user|has_record_perm(record, 'read-files') else [] %}
       {%-  include "zenodo_records/box/preview.html" %}
       {%-  include "zenodo_records/box/files.html" %}
+      {%-  include "zenodo_records/box/suggestion.html" %}
+      {%-  include "zenodo_records/box/suggestion.html" %}
+      {%-  include "zenodo_records/box/suggestion.html" %}
+      {%-  include "zenodo_records/box/suggestion.html" %}
       {%-  include "zenodo_records/box/suggestion.html" %}
       {%-  include "zenodo_records/box/references.html" %}
       {%-  include "zenodo_records/box/citations.html" %}

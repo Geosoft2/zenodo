@@ -31,8 +31,40 @@
           {{ _("Suggestions") }}
       </div>
       <div class="col-sm-11" style="margin-top: 5px;">
-       Here you can find similar data to your dataset
-      </div>  
+       Here you can find data that is similar data to your dataset
+      </div> 
+      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+      <script type="text/javascript">
+        console.log("drin")
+        console.log("aktuell")
+        document.getElementById("demo").innerHTML = "hallo welt"
+        $(document).ready(function () {
+          
+        
+          //$.get( "/records/<recid>/similar", function( data ) {
+        //console.log( "Data Loaded: " + data );
+        //});
+        id=document.getElementById("identifier").innerHTML;
+        console.log("hier")
+        console.log(id)
+        console.log("seite geladen")
+        link= "http://localhost:5000/api/records/"+id+"/similar"
+        console.log(link)
+
+        //FUNKTIONIERT!!!
+        $.get( link, function( data ) {
+          //alert( "Data Loaded: " + data['similar'][0]['id'] );
+          console.log("Data Loaded: " + data['similar'][0]['id'])
+        });
+              
+      });
+
+
+      </script>
+
+     
+
+
       <div class="collapse in" id="collapseTwo">
       {%- if files -%}
         <table class="table table-striped" >
@@ -44,9 +76,19 @@
         <tbody>
         {%- for file in files|sort(attribute='key') -%}
         {%- set file_url = url_for('invenio_records_ui.recid_files', pid_value=pid.pid_value, filename=file.key, download=1) %}
+        {%- set testval = record.publication_date%}
+        {%- set bbox = record.bbox%}
+        {%- set id = record.recid%}
+        {%- set sim = record.similar%}
           <tr>
             <td>
               <a class="filename" href="{{file_url}}">{{ file.key }}</a>
+              <a class="">{{record}}</a>
+              <a class="">{{bbox}}</a>
+              <a class="">{{'sim'}}</a>
+              <a class="">{{id}}</a>
+              <p id="demo"></p>
+              <p id="identifier">{{id}}</p>
             </td>
           </tr>
         {%- endfor -%}

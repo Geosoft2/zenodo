@@ -40,7 +40,6 @@ import sys
 from os.path import join
 
 from .api import ZenodoDeposit
-
 def indexer_receiver(sender, json=None, record=None, index=None,
                      **dummy_kwargs):
     """Connect to before_record_index signal to transform record for ES.
@@ -67,6 +66,22 @@ def indexer_receiver(sender, json=None, record=None, index=None,
         schema = json['$schema']
 
         pub_record = record.fetch_published()[1]
+
+        #CLI-Tool connection:
+        #creating parts of the path variable
+        # id_val=(pub_record['_files'][0]['file_id'])
+        # first_two=id_val[:2]
+        # second_two=id_val[2:4]
+        # last_part=id_val[4:]
+
+        # first_part=join(sys.prefix, 'var/instance/data')
+        # path=first_part+'/'+first_two+'/'+second_two+'/'+last_part+'/data'
+
+        # print("########################################################################################################")
+        # val=getMetadata(path,'bbox', 'single', True)
+        # print("########################################################################################################")
+        # print(val)
+        # print("########################################################################################################")
 
         # Temporarily set to draft mode to ensure that `clear` can be called
         json['_deposit']['status'] = 'draft'
@@ -109,15 +124,27 @@ def extractor_receiver(sender, *args, **kwargs):
     :type record: `invenio_records.api.Deposit`
     """
     record = kwargs['record']
+    print("=============================================================================")
     print(record)
+    print("=============================================================================")
+    #record['description'] = 'schroedingers boundingbox - ist sie da ist sie nicht da?'
+    record['bbox']=[1,2,3,4]
+    print("????????????????????????????????????????????????????????????????")
+    print(record)
+    print("??????????????????????????????????????????????????????????????????")
+    #print(record['description'])
+    #print(record[])
+    print("5666665656565656565656565656")
     try:
         print(record['_files'][0]['file_id'])
         id_val=(record['_files'][0]['file_id'])
         first_two=id_val[:2]
         second_two=id_val[2:4]
         last_part=id_val[4:]
+
         first_part=join(sys.prefix, 'var/instance/data')
         path=first_part+'/'+first_two+'/'+second_two+'/'+last_part+'/data'
+
         print("########################################################################################################")
         val=getMetadata(path,'bbox', 'single', True)
         print("########################################################################################################")

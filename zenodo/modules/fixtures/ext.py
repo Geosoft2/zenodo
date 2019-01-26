@@ -46,6 +46,7 @@ class ZenodoFixtures(object):
         app.cli.add_command(fixtures)
 
     def init_config(self, config):
+        print("===============================================================")
         """Flask application initialization."""
         config.setdefault(
             'FIXTURES_FILES_LOCATION',
