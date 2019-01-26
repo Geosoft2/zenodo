@@ -33,12 +33,32 @@
       <div class="col-sm-11" style="margin-top: 5px;">
        Here you can find data that is similar data to your dataset
       </div> 
-      <script>
+      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+      <script type="text/javascript">
         console.log("drin")
+        console.log("aktuell")
         document.getElementById("demo").innerHTML = "hallo welt"
-        //$.get( "/records/<recid>/similar", function( data ) {
-        //alert( "Data Loaded: " + data );
+        $(document).ready(function () {
+          
+        
+          //$.get( "/records/<recid>/similar", function( data ) {
+        //console.log( "Data Loaded: " + data );
         //});
+        id=document.getElementById("identifier").innerHTML;
+        console.log("hier")
+        console.log(id)
+        console.log("seite geladen")
+        link= "http://localhost:5000/api/records/"+id+"/similar"
+        console.log(link)
+
+        //FUNKTIONIERT!!!
+        $.get( link, function( data ) {
+          //alert( "Data Loaded: " + data['similar'][0]['id'] );
+          console.log("Data Loaded: " + data['similar'][0]['id'])
+        });
+              
+      });
+
 
       </script>
 
@@ -68,6 +88,7 @@
               <a class="">{{'sim'}}</a>
               <a class="">{{id}}</a>
               <p id="demo"></p>
+              <p id="identifier">{{id}}</p>
             </td>
           </tr>
         {%- endfor -%}
