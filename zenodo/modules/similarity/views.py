@@ -151,9 +151,9 @@ def similar(recid):
 
     sortSimList = sorted(simList, key=lambda x: x[0], reverse=True)
 
-    print('################## sortsim-list #######################')
-    print(sortSimList)
-    print('################## sortsim-list #######################')
+    # print('################## sortsim-list #######################')
+    # print(sortSimList)
+    # print('################## sortsim-list #######################')
 
     id_list = list()
     name_list = list()
@@ -189,8 +189,23 @@ def similar(recid):
         "sim_value": sim_value_list
     }
 
+    print('################## sim-list #######################')
+    print(sim_value_list)
+    print('################## sim-list #######################')    
+
     json_dict = {}
-    data = []
+    json_dict = [{"match": 
+                    [
+                        {"id": listItem[2]},
+                        {"name": listItem[3]},
+                        {"bbox": listItem[1][0]},
+                        {"sim_value": listItem[0]}
+                    ]
+                    } for listItem in sortSimList]
+
+    print('################## json_dict #######################')
+    print(json_dict)
+    print('################## json_dict #######################')   
 
     json_sortSimList = list()
     for ljson in sortSimList:
@@ -205,7 +220,7 @@ def similar(recid):
     return Response(
         json.dumps({
             'record': rrid,
-            'similar': json_data,
+            'similar': json_dict,
         },
             **_format_args()
         ),
