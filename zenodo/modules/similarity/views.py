@@ -208,8 +208,9 @@ def similar(recid):
     print('################## json_dict #######################')   
 
     json_sortSimList = list()
-    for ljson in sortSimList:
-        json_sortSimList.append("'sim_value': "+str(ljson[0])+", 'bbox': "+str(ljson[1])+", 'id': "+str(ljson[2])+", 'name': "+str(ljson[3]))
+    # for ljson in sortSimList:
+    #     json_sortSimList.append("'sim_value': "+str(ljson[0])+", 'bbox': "+str(ljson[1])+", 'id': "+str(ljson[2])+", 'name': "+str(ljson[3]))
+        
     
     json_data = json.dumps(json_sortSimList)
     print('################## json_data #######################')

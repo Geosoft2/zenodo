@@ -1,0 +1,175 @@
+{#
+# This file is part of Zenodo.
+# Copyright (C) 2016 CERN.
+#
+# Zenodo is free software; you can redistribute it
+# and/or modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation; either version 2 of the
+# License, or (at your option) any later version.
+#
+# Zenodo is distributed in the hope that it will be
+# useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Zenodo; if not, write to the
+# Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+# MA 02111-1307, USA.
+#
+# In applying this license, CERN does not
+# waive the privileges and immunities granted to it by virtue of its status
+# as an Intergovernmental Organization or submit itself to any jurisdiction.
+-#}
+
+{%- set state = record.access_right|accessright_category(record.embargo_date, success='default') %}
+{%- set files = record.files if current_user|has_record_perm(record, 'read-files') else [] %}
+{%- if record._files -%}
+{%- set id = record.recid%}
+<style>
+  .selectbtn {
+            background-color: #6e9fcf;
+            color: white;
+            padding: 1px 5px;
+            font-size: 14px;
+            line-height: 1.42857;
+            padding: 1px 5px;
+            border-radius: 3px;
+            border: none;
+            cursor: pointer;
+            }
+            .dropdown {
+            float: right;
+            position: relative;
+            display: inline-block;
+            padding: 1px 5px;
+            cursor: pointer;
+            }
+         </style>
+<div class="panel panel-{{state}}" id="files">
+  <div class="panel-heading" id="sugghead">
+    {{ _("Suggestions Based On This Dataset") }}
+    <p hidden id="identifier">{{id}}</p>
+    <div class="dropdown">
+      <select class="selectbtn" id="count" onchange="location.reload()">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+      </select>
+    </div>
+  </div>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    // executed when page is completely loaded
+    $(document).ready(function () {
+
+      //get the value from the select option
+      var e = document.getElementById("count");
+      var number = e.options[e.selectedIndex].value;
+      console.log(number);
+
+      id = document.getElementById("identifier").innerHTML;
+      // downsizing the "number"- value if it is bigger than the number of similar datasets.
+      link = "/api/records/" + id + "/similar"
+
+      var call = $.ajax({
+        url: link,
+        type: 'GET',
+        beforeSend: function () {
+          console.log("Downloading ");
+        },
+        async: false,
+        complete: function () {
+        },
+        success: function (data) {
+
+          len = length(data.similar);
+          if (len < number) {
+            number = len;
+          }
+        }
+      });
+
+
+
+
+
+      var currentDiv = document.getElementById("sugghead");
+      //creating div elements to show the suggestions
+      for (var i = 0; i < number; i++) {
+
+        var newDiv = document.createElement("div");
+        newDiv.id = "sugg" + (number - i);
+        newDiv.className = "collapse in"
+
+        var x = document.createElement("TABLE");
+        x.id = "table" + (number - i);
+        x.className = "table table-striped";
+        newDiv.appendChild(x);
+
+        var head = x.createTHead();
+        var headrow = head.insertRow(0);
+        th = document.createElement('th');
+        headhead = headrow.appendChild(th);
+
+        var text = document.createTextNode("Title");
+        headhead.appendChild(text);
+
+        var body = x.createTBody();
+        bodyrow = body.insertRow(0)
+        bodycell = bodyrow.insertCell(0)
+
+        var anchor = document.createElement("A");
+        title = bodycell.appendChild(anchor);
+        title.id = "suggestion_filename" + (number - i);
+
+        var para = document.createElement("P");
+        description = bodycell.appendChild(para);
+        description.id = "descr" + (number - i);
+
+        //AJAX call of the similar endpoint
+        var call = $.ajax({
+          url: link,
+          type: 'GET',
+          beforeSend: function () {
+            // console.log("Downloading ");
+          },
+          async: false,
+          complete: function () {
+          },
+          success: function (data) {
+            //change content of the div element defined above
+            suggestion_filename_id = "suggestion_filename" + (number - i);
+            suggestion_id = data['similar'][number - i - 1]['match'][0]['id'];
+            suggestion_name = data['similar'][number - i - 1]['match'][1]['name'];
+            sugname = document.createTextNode(suggestion_name);
+            anchor.appendChild(sugname)
+            title.href = "/record/" + suggestion_id
+          }
+        });
+
+
+        //insert the new div element to the html page
+        insertAfter(newDiv, currentDiv)
+
+      }
+    });
+
+    //@see https://stackoverflow.com/questions/4793604/how-to-insert-an-element-after-another-element-in-javascript-without-using-a-lib
+
+    function insertAfter(newNode, referenceNode) {
+      referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+    }
+
+    //https://stackoverflow.com/questions/24977110/how-to-count-the-number-of-elements-in-this-json-object
+
+
+    function length(obj) {
+      return Object.keys(obj).length;
+    }
+  </script>
+
+
+
+</div>
+{%- endif %}
