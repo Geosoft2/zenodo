@@ -176,26 +176,9 @@ def similar(recid):
                     ]
                     } for listItem in sortSimList[0:json_output_int]]
 
-<<<<<<< HEAD
-    print('################## json_dict #######################')
-    print(json_dict)
-    print('################## json_dict #######################')   
-
-    json_sortSimList = list()
-    # for ljson in sortSimList:
-    #     json_sortSimList.append("'sim_value': "+str(ljson[0])+", 'bbox': "+str(ljson[1])+", 'id': "+str(ljson[2])+", 'name': "+str(ljson[3]))
-        
-    
-    json_data = json.dumps(json_sortSimList)
-    print('################## json_data #######################')
-    print(json_data)
-    print(type(json_data))
-    print('################## json_data #######################')
-=======
     # print('################## json_dict #######################')
     # print(json_dict)
     # print('################## json_dict #######################')
->>>>>>> 1b6b57f87a68782aa85a8db67df9b8ff04b649e9
     
     return Response(
         json.dumps({
