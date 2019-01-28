@@ -33,7 +33,7 @@ from zenodo.modules.records.fetchers import zenodo_record_fetcher
 from zenodo.modules.records.api import ZenodoRecord
 from zenodo.modules.stats.utils import extract_event_record_metadata, fetch_record, fetch_record_file
 
-from extractTool.similar import calculateScore
+from extractTool.similar import master
 
 import requests
 
@@ -85,9 +85,13 @@ def similar(recid):
     """get actual record with fetcher"""
     record = fetch_record(recid)
 
-    # print('################ record fetch try #########################')
-    # print(type(record[1]['bbox']))
-    # print('################ record fetch try #########################')    
+    print('################ record fetch try #########################')
+    print(record[1]['_files'][0]['type'])
+    print('################ record fetch try #########################')
+
+    print('################ record bbox fetch try #########################')
+    print(type(record[1]['bbox']))
+    print('################ record bbox fetch try #########################')    
 
     """variable of the record id for future use in loops as the parameter wont do"""
     rrid = record[1]['recid']
@@ -101,21 +105,21 @@ def similar(recid):
     recordlist_raw = response.json()
     
     """prints for navigation purpose"""
-    # print('################ bbox fetch try #########################')
-    # print(recordlist_raw['hits']['hits'][0]['metadata']['bbox'])
-    # print('################ bbox fetch try #########################')
+    print('################ bbox fetch try #########################')
+    print(recordlist_raw['hits']['hits'][0]['metadata']['bbox'])
+    print('################ bbox fetch try #########################')
 
-    # print('################ id fetch try #########################')
-    # print(recordlist_raw['hits']['hits'][0]['id'])
-    # print('################ id fetch try #########################')
+    print('################ id fetch try #########################')
+    print(recordlist_raw['hits']['hits'][0]['id'])
+    print('################ id fetch try #########################')
 
-    # print('################ name fetch try #########################')
-    # print(recordlist_raw['hits']['hits'][0]['metadata']['title'])
-    # print('################ id fetch try #########################')
+    print('################ name fetch try #########################')
+    print(recordlist_raw['hits']['hits'][0]['metadata']['title'])
+    print('################ id fetch try #########################')
 
-    # print('################ total file count fetch try #########################')
-    # print(recordlist_raw['hits']['total'])
-    # print('################ total file fetch try #########################')
+    print('################ total file count fetch try #########################')
+    print(recordlist_raw['hits']['total'])
+    print('################ total file count fetch try #########################')
 
     """total file count from the record-metadata-list"""
     total_files = recordlist_raw['hits']['total']
@@ -137,30 +141,31 @@ def similar(recid):
             irecord = fetch_record(rid)
             rname = recordlist[i]['metadata']['title']
             rbbox = irecord[1]['bbox']
+            rtype = irecord[1]['_files'][0]['type']
             if rbbox != None and rbbox != [] and type(rbbox) == list and type(rbbox[0]) == list and rid != rrid:
-                bboxList.append([rbbox,rid,rname])
+                bboxList.append([rbbox,rid,rname,rtype])
         except Exception:
             print('no valid bounding box found in record '+str(rid))
     
-    # print('################## bbox-list #######################')
-    # print(bboxList)
-    # print('################## bbox-list #######################')
+    print('################## bbox-list #######################')
+    print(bboxList)
+    print('################## bbox-list #######################')
     
     """appending the simulation score to the list with the method written in our module extractTool similar.py"""
     simList = list()
     for bboxItem in bboxList:
-        simList.append([calculateScore(bboxItem[0][0],record[1]['bbox'][0]),bboxItem[0], bboxItem[1], bboxItem[2]])
+        simList.append([master(bboxItem[0][0],record[1]['bbox'][0], bboxItem[3], record[1]['_files'][0]['type']),bboxItem[0], bboxItem[1], bboxItem[2], bboxItem[3]])
     
-    # print('################## sim-list #######################')
-    # print(simList)
-    # print('################## sim-list #######################')
+    print('################## sim-list #######################')
+    print(simList)
+    print('################## sim-list #######################')
 
     """sorted list as of the similarity value descending order"""
-    sortSimList = sorted(simList, key=lambda x: x[0])
+    sortSimList = sorted(simList, key=lambda x: x[0], reverse=True)
 
-    # print('################## sortsim-list #######################')
-    # print(sortSimList)
-    # print('################## sortsim-list #######################')
+    print('################## sortsim-list #######################')
+    print(sortSimList)
+    print('################## sortsim-list #######################')
 
     """constant to set how many records will be displayed in the output json file later on"""
     json_output_int = 20    
@@ -172,13 +177,14 @@ def similar(recid):
                         {"id": listItem[2]},
                         {"name": listItem[3]},
                         {"bbox": listItem[1][0]},
+                        {"filetype": listItem[4]},
                         {"sim_value": listItem[0]}
                     ]
                     } for listItem in sortSimList[0:json_output_int]]
 
-    # print('################## json_dict #######################')
-    # print(json_dict)
-    # print('################## json_dict #######################')
+    print('################## json_dict #######################')
+    print(json_dict)
+    print('################## json_dict #######################')
     
     return Response(
         json.dumps({
