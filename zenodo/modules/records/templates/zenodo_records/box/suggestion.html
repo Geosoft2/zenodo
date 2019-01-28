@@ -1,139 +1,361 @@
+
+
 {#
-# This file is part of Zenodo.
-# Copyright (C) 2016 CERN.
-#
-# Zenodo is free software; you can redistribute it
-# and/or modify it under the terms of the GNU General Public License as
-# published by the Free Software Foundation; either version 2 of the
-# License, or (at your option) any later version.
-#
-# Zenodo is distributed in the hope that it will be
-# useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-# General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Zenodo; if not, write to the
-# Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
-# MA 02111-1307, USA.
-#
-# In applying this license, CERN does not
-# waive the privileges and immunities granted to it by virtue of its status
-# as an Intergovernmental Organization or submit itself to any jurisdiction.
--#}
-
-   {%- set state = record.access_right|accessright_category(record.embargo_date, success='default') %}
-    {%- set files = record.files if current_user|has_record_perm(record, 'read-files') else [] %}
-    {%- if record._files -%}
-    <div class="panel panel-{{state}}" id="files">
-      <div class="panel-heading">
+  # This file is part of Zenodo.
+  # Copyright (C) 2016 CERN.
+  #
+  # Zenodo is free software; you can redistribute it
+  # and/or modify it under the terms of the GNU General Public License as
+  # published by the Free Software Foundation; either version 2 of the
+  # License, or (at your option) any later version.
+  #
+  # Zenodo is distributed in the hope that it will be
+  # useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  # General Public License for more details.
+  #
+  # You should have received a copy of the GNU General Public License
+  # along with Zenodo; if not, write to the
+  # Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+  # MA 02111-1307, USA.
+  #
+  # In applying this license, CERN does not
+  # waive the privileges and immunities granted to it by virtue of its status
+  # as an Intergovernmental Organization or submit itself to any jurisdiction.
+  -#}
+  {%- set state = record.access_right|accessright_category(record.embargo_date, success='default') %}
+  {%- set files = record.files if current_user|has_record_perm(record, 'read-files') else [] %}
+  {%- if record._files -%}
+  {%- set id = record.recid%}
+  <style>
+     .selectbtn {
+     background-color: #6e9fcf;
+     color: white;
+     padding: 1px 5px;
+     font-size: 14px;
+     line-height: 1.42857;
+     padding: 1px 5px;
+     border-radius: 3px;
+     border: none;
+     cursor: pointer;
+     }
+     .dropdown {
+     float: right;
+     position: relative;
+     display: inline-block;
+     padding: 1px 5px;
+     cursor: pointer;
+     }
+  </style>
+  <div class="panel panel-{{state}}" id="files">
+     <div class="panel-heading" id ="sugghead">
         <!---<a class="panel-toggle" data-toggle="collapse" href="similarity">   Hier können wir unseren similarity endpunkt hinzufügen-->
-          {{ _("Suggestions") }}
-      </div>
-      <div class="col-sm-11" style="margin-top: 5px;">
-       Here you can find data that is similar data to your dataset
-      </div> 
-      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-      <script type="text/javascript">
-        console.log("drin")
-        console.log("aktuell")
-        document.getElementById("demo").innerHTML = "hallo welt"
-        $(document).ready(function () {
-          
-        
-          //$.get( "/records/<recid>/similar", function( data ) {
-        //console.log( "Data Loaded: " + data );
-        //});
-        id=document.getElementById("identifier").innerHTML;
-        console.log("hier")
-        console.log(id)
-        console.log("seite geladen")
-        link= "http://localhost:5000/api/records/"+id+"/similar"
-        console.log(link)
-
-        //FUNKTIONIERT!!!
-        $.get( link, function( data ) {
-          //alert( "Data Loaded: " + data['similar'][0]['id'] );
-          console.log("Data Loaded: " + data['similar'][0]['id'])
-        });
-              
-      });
-
-
-      </script>
-
+        {{ _("Suggestions Based On This Dataset") }}
+        <p hidden id="identifier">{{id}}</p>
+         <div class="dropdown">
+           <select class="selectbtn" id="count" onchange="location.reload()">
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="20">20</option>
+           </select>
+        </div> 
+  </div>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+  <script type="text/javascript">
+     console.log("drin")
+     console.log("aktuell")
+     //document.getElementById("demo").innerHTML = "hallo welt"
+     $(document).ready(function () {
+               var e = document.getElementById("count");
+     var number = e.options[e.selectedIndex].value;
+     console.log(number);
+      
+     
+     // füge das neu erstellte Element und seinen Inhalt ins DOM ein
+     var currentDiv = document.getElementById("sugghead"); 
+     console.log(currentDiv)
+     //var i;
+     
+    //  for (var i=0; i<number; i++){
+    //    //console.log(i)
+    //    var newDiv = document.createElement("div");
+    //    newDiv.id="sugg"+i;
+    //    newDiv.className="collapse in"
+    //    var newContent = document.createTextNode("Hi there and greetings!"); 
+    //  newDiv.appendChild(newContent); // füge den Textknoten zum neu erstellten div hinzu.
      
 
-
-      <div class="collapse in" id="collapseTwo">
-      {%- if files -%}
-        <table class="table table-striped" >
-        <thead>
-          <tr class="">
-            <th>{{_('Name')}}</th>
-          </tr>
-        </thead>
-        <tbody>
-        {%- for file in files|sort(attribute='key') -%}
-        {%- set file_url = url_for('invenio_records_ui.recid_files', pid_value=pid.pid_value, filename=file.key, download=1) %}
-        {%- set testval = record.publication_date%}
-        {%- set bbox = record.bbox%}
-        {%- set id = record.recid%}
-        {%- set sim = record.similar%}
-          <tr>
-            <td>
-              <a class="filename" href="{{file_url}}">{{ file.key }}</a>
-              <a class="">{{record}}</a>
-              <a class="">{{bbox}}</a>
-              <a class="">{{'sim'}}</a>
-              <a class="">{{id}}</a>
-              <p id="demo"></p>
-              <p id="identifier">{{id}}</p>
-            </td>
-          </tr>
-        {%- endfor -%}
-        </tbody>
-        </table>
-      {%- endif %}
-      </div>
-    </div>
-    {%- endif %}
-
-<!-- {#   <div class="row record-elem" ng-repeat="record in vm.invenioSearchResults.hits.hits track by $index">
-  <div class="col-xs-12">
-    <div class="pull-right view-record hidden-xs">
-      <a target="_self" ng-href="/record/{{record.id}}" class="btn btn-default">View</a>
-    </div>
-    <span class="label label-info" bs-tooltip data-container="div" data-title="Publication date">{{ record.metadata.publication_date|date:'longDate' }}{{ record.conceptrecid ? ' (' + (record.metadata.version || ('v' + (record.metadata.relations.version[0].index + 1))) + ')' : '' }}</span>
-    <span class="label label-default">{{ record.metadata.resource_type.title }}</span>
-    <span ng-switch on="record.metadata.access_right">
-      <span ng-switch-when="embargoed">
-          <span class="label label-{{record.metadata.access_right_category}} titlecase" bs-tooltip data-container="div" data-placement="top" data-title="Available as Open Access after {{ record.metadata.embargo_date|date:'longDate' }}">{{ record.metadata.access_right }} Access</span>
-      </span>
-      <span ng-switch-default>
-          <span class="label label-{{record.metadata.access_right_category}} titlecase">{{ record.metadata.access_right }} Access</span>
-      </span>
-    </span>
-    <h4><a target="_self" ng-href="/record/{{record.id}}">{{record.metadata.title}}</a></h4>
-    <p>
-      <span ng-repeat='creator in record.metadata.creators'>
-        <span ng-if='creator.orcid'>
-          <a href="http://orcid.org/{{creator.orcid}}"><img class="inline-orcid" src="/static/img/orcid.png" /></a>
-        </span>
-      <a target="_self" ng-href="/record/{{record.id}}" class="text-muted">{{ creator.name }}</a>;
-      </span>
-    </p>
-    <p class="hidden-xs"><a target="_self" ng-href="/record/{{record.id}}"><span ng-bind-html="record.metadata.description|striptags|limitTo:300"></span></a></p>
-    <p>
-      <small class="text-muted hidden-xs">
-        Uploaded on {{ record.created|date:'longDate' }}
-      </small>
-    </p>
-    <p ng-if="!vm.invenioSearchArgs.all_versions && record.metadata.relations.version[0].count > 1">
-      <span class="text-muted hidden-xs"><a href ng-click="vm.invenioSearchArgs.q = 'conceptrecid:' + record.conceptrecid; vm.invenioSearchArgs.all_versions = true; vm.invenioSearchArgs.sort='-version'"><small><i>{{ record.metadata.relations.version[0].count - 1 }} more version(s) exist for this record</i></small></a></span>
-    </p>
-
-    <hr />
+    //  console.log("trtrt")
+    //  console.log(newDiv)
+    //  insertAfter(newDiv, currentDiv)
+     
+    //  }
+     
+     id=document.getElementById("identifier").innerHTML;
+     link= "/api/records/"+id+"/similar"
+     //link_record=""
+     
+     //FUNKTIONIERT!!!
+     var link_record;
+     var link_record1;
+     var link_record2;
+     var link_record3;
+     var link_record4;
+     
+     $.get( link, function( data ) {
+       console.log(link)
+       console.log(data)
+     
+       // first suggestion
+       // suggestion_id=data['similar'][0]['match'][0]['id'];
+       // suggestion_name=data['similar'][0]['match'][1]['name'];
+       // document.getElementById("suggestion_filename").innerHTML = suggestion_name
+       // document.getElementById("suggestion_filename").href="/record/"+suggestion_id
+       // link_record="/api/records/"+suggestion_id
+     
+       // // second suggestion
+       // suggestion_id1=data['similar'][1]['match'][0]['id'];
+       // suggestion_name1=data['similar'][1]['match'][1]['name'];
+       // document.getElementById("suggestion_filename1").innerHTML = suggestion_name1
+       // document.getElementById("suggestion_filename1").href="/record/"+suggestion_id1
+       // link_record1="/api/records/"+suggestion_id1
+       
+       // // third suggestion
+       // suggestion_id2=data['similar'][2]['match'][0]['id'];
+       // suggestion_name2=data['similar'][2]['match'][1]['name'];
+       // document.getElementById("suggestion_filename2").innerHTML = suggestion_name2
+       // document.getElementById("suggestion_filename2").href="/record/"+suggestion_id2
+       // link_record2="/api/records/"+suggestion_id2
+       
+       // // fourth suggestion
+       // suggestion_id3=data['similar'][3]['match'][0]['id'];
+       // suggestion_name3=data['similar'][3]['match'][1]['name'];
+       // document.getElementById("suggestion_filename3").innerHTML = suggestion_name3
+       // document.getElementById("suggestion_filename3").href="/record/"+suggestion_id3
+       // link_record3="/api/records/"+suggestion_id3
+       
+       // // fifth suggestion
+       // suggestion_id4=data['similar'][4]['match'][0]['id'];
+       // suggestion_name4=data['similar'][4]['match'][1]['name'];
+       // document.getElementById("suggestion_filename4").innerHTML = suggestion_name4
+       // document.getElementById("suggestion_filename4").href="/record/"+suggestion_id4
+       // link_record4="/api/records/"+suggestion_id4
+       
+     
+     //     $.get( link_record, function( data1 ) {
+     //   descri=data1['metadata']['description']
+     //   document.getElementById("descr").innerHTML = descri
+     // })
+     
+     
+     //     $.get( link_record1, function( data2 ) {
+     //   descri=data2['metadata']['description']
+     //   document.getElementById("descr1").innerHTML = descri
+     // })
+     
+     
+     //     $.get( link_record2, function( data3 ) {
+     //   descri=data3['metadata']['description']
+     //   document.getElementById("descr2").innerHTML = descri
+     // })
+     
+     
+     //     $.get( link_record3, function( data4 ) {
+     //   descri=data4['metadata']['description']
+     //   document.getElementById("descr3").innerHTML = descri
+     // })
+     
+     
+     //     $.get( link_record4, function( data5 ) {
+     //   descri=data5['metadata']['description']
+     //   document.getElementById("descr4").innerHTML = descri
+     // })
+     }); 
+     
+     });
+     //@see https://stackoverflow.com/questions/4793604/how-to-insert-an-element-after-another-element-in-javascript-without-using-a-lib
+     
+     function insertAfter(newNode, referenceNode) {
+     referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+     }
+     
+     
+     //for (i=0; i<)
+     
+     
+     //fuegt im roten bereich ein
+     //currentDiv.appendChild(newDiv); 
+     console.log("44444444")
+     
+         
+           // for (i=0; i<20; i++){
+           //   console.log("neu")
+           //   document.createElement('div')
+           // }
+          
+     
+  </script>
+  <!-- <div class="collapse in" id="sugg1">
+     {%- if files -%}
+       <table class="table table-striped" >
+       <thead>
+         <tr class="">
+           <th>{{_('Name')}}</th>
+         </tr>
+       </thead>
+       <tbody>
+       {%- for file in files|sort(attribute='key') -%}
+       {%- set file_url = url_for('invenio_records_ui.recid_files', pid_value=pid.pid_value, filename=file.key, download=1) %}
+       {%- set testval = record.publication_date%}
+       {%- set bbox = record.bbox%}
+       {%- set id = record.recid%}
+       {%- set sim = record.similar%}
+         <tr>
+           <td>
+             <a id="suggestion_filename" href=""></a>
+             <p id="descr"></p>
+           </td>
+         </tr>
+       {%- endfor -%}
+       </tbody>
+       </table>
+     {%- endif %}
+     </div> -->
+  <!-- <div class="collapse in" id="test2">
+     {%- if files -%}
+       <table class="table table-striped" >
+       <thead>
+         <tr class="">
+           <th>{{_('Name')}}</th>
+         </tr>
+       </thead>
+       <tbody>
+       {%- for file in files|sort(attribute='key') -%}
+       {%- set file_url = url_for('invenio_records_ui.recid_files', pid_value=pid.pid_value, filename=file.key, download=1) %}
+       {%- set testval = record.publication_date%}
+       {%- set bbox = record.bbox%}
+       {%- set id = record.recid%}
+       {%- set sim = record.similar%}
+         <tr>
+           <td>
+             <a id="suggestion_filename1" href=""></a>
+             <p id="descr1"></p>
+           </td>
+         </tr>
+       {%- endfor -%}
+       </tbody>
+       </table>
+     {%- endif %}
+     </div> -->
+  <!-- <div class="collapse in" id="collapseTwo">
+     {%- if files -%}
+       <table class="table table-striped" >
+       <thead>
+         <tr class="">
+           <th>{{_('Name')}}</th>
+         </tr>
+       </thead>
+       <tbody>
+       {%- for file in files|sort(attribute='key') -%}
+       {%- set file_url = url_for('invenio_records_ui.recid_files', pid_value=pid.pid_value, filename=file.key, download=1) %}
+       {%- set testval = record.publication_date%}
+       {%- set bbox = record.bbox%}
+       {%- set id = record.recid%}
+       {%- set sim = record.similar%}
+         <tr>
+           <td>
+             <a id="suggestion_filename2" href=""></a>
+             <p id="descr2"></p>
+           </td>
+         </tr>
+       {%- endfor -%}
+       </tbody>
+       </table>
+     {%- endif %}
+     </div> -->
+  <!-- <div class="collapse in" id="collapseTwo">
+     {%- if files -%}
+       <table class="table table-striped" >
+       <thead>
+         <tr class="">
+           <th>{{_('Name')}}</th>
+         </tr>
+       </thead>
+       <tbody>
+       {%- for file in files|sort(attribute='key') -%}
+       {%- set file_url = url_for('invenio_records_ui.recid_files', pid_value=pid.pid_value, filename=file.key, download=1) %}
+         <tr>
+           <td>
+             <a id="suggestion_filename3" href=""></a>
+             <p id="descr3"></p>
+           </td>
+         </tr>
+       {%- endfor -%}
+       </tbody>
+       </table>
+     {%- endif %}
+     </div> -->
+  <!-- <div class="collapse in" id="collapseTwo">
+     {%- if files -%}
+       <table class="table table-striped" >
+       <thead>
+         <tr class="">
+           <th>{{_('Name')}}</th>
+         </tr>
+       </thead>
+       <tbody>
+       {%- for file in files|sort(attribute='key') -%}
+       {%- set file_url = url_for('invenio_records_ui.recid_files', pid_value=pid.pid_value, filename=file.key, download=1) %}
+         <tr>
+           <td>
+             <a id="suggestion_filename4" href=""></a>
+             <p id="descr4"></p>
+           </td>
+         </tr>
+       {%- endfor -%}
+       </tbody>
+       </table>
+     {%- endif %}
+     </div> -->
   </div>
-</div>
-#} -->
+  {%- endif %}
+  <!-- {#   <div class="row record-elem" ng-repeat="record in vm.invenioSearchResults.hits.hits track by $index">
+     <div class="col-xs-12">
+       <div class="pull-right view-record hidden-xs">
+         <a target="_self" ng-href="/record/{{record.id}}" class="btn btn-default">View</a>
+       </div>
+       <span class="label label-info" bs-tooltip data-container="div" data-title="Publication date">{{ record.metadata.publication_date|date:'longDate' }}{{ record.conceptrecid ? ' (' + (record.metadata.version || ('v' + (record.metadata.relations.version[0].index + 1))) + ')' : '' }}</span>
+       <span class="label label-default">{{ record.metadata.resource_type.title }}</span>
+       <span ng-switch on="record.metadata.access_right">
+         <span ng-switch-when="embargoed">
+             <span class="label label-{{record.metadata.access_right_category}} titlecase" bs-tooltip data-container="div" data-placement="top" data-title="Available as Open Access after {{ record.metadata.embargo_date|date:'longDate' }}">{{ record.metadata.access_right }} Access</span>
+         </span>
+         <span ng-switch-default>
+             <span class="label label-{{record.metadata.access_right_category}} titlecase">{{ record.metadata.access_right }} Access</span>
+         </span>
+       </span>
+       <h4><a target="_self" ng-href="/record/{{record.id}}">{{record.metadata.title}}</a></h4>
+       <p>
+         <span ng-repeat='creator in record.metadata.creators'>
+           <span ng-if='creator.orcid'>
+             <a href="http://orcid.org/{{creator.orcid}}"><img class="inline-orcid" src="/static/img/orcid.png" /></a>
+           </span>
+         <a target="_self" ng-href="/record/{{record.id}}" class="text-muted">{{ creator.name }}</a>;
+         </span>
+       </p>
+       <p class="hidden-xs"><a target="_self" ng-href="/record/{{record.id}}"><span ng-bind-html="record.metadata.description|striptags|limitTo:300"></span></a></p>
+       <p>
+         <small class="text-muted hidden-xs">
+           Uploaded on {{ record.created|date:'longDate' }}
+         </small>
+       </p>
+       <p ng-if="!vm.invenioSearchArgs.all_versions && record.metadata.relations.version[0].count > 1">
+         <span class="text-muted hidden-xs"><a href ng-click="vm.invenioSearchArgs.q = 'conceptrecid:' + record.conceptrecid; vm.invenioSearchArgs.all_versions = true; vm.invenioSearchArgs.sort='-version'"><small><i>{{ record.metadata.relations.version[0].count - 1 }} more version(s) exist for this record</i></small></a></span>
+       </p>
+     
+       <hr />
+     </div>
+     </div>
+     #} -->
+  
+  
