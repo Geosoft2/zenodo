@@ -78,7 +78,8 @@ def index():
                     'invenio_records_rest.od_lic_list', _external=True),
                 'records': url_for(
                     'invenio_records_rest.recid_list', _external=True), 
-                'similarity': 'http://localhost:5000/api/similarity/',    
+                'similarity': url_for(
+                    'invenio_records_rest.recid_list', _external=True),  
                 }
             },
             **_format_args()
