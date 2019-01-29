@@ -109,16 +109,13 @@ def extractor_receiver(sender, *args, **kwargs):
     """
 
     bboxArray=[]
+    #folder_convHullArray=[]
+    timeArray=[]
     record = kwargs['record']
-    ########################weggenommen##############################################
-    #record['bbox']=[1,2,3,4]
+    record['bbox']=[[None],[None],[None]]
     try:
-        print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-        print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-        print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-        print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-        print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
         for i in record['_files']:
+            #definition of the folderpath
             id_val=(i['file_id'])
             first_two=id_val[:2]
             second_two=id_val[2:4]
@@ -126,58 +123,70 @@ def extractor_receiver(sender, *args, **kwargs):
 
             first_part=join(sys.prefix, 'var/instance/data')
             path=first_part+'/'+first_two+'/'+second_two+'/'+last_part+'/data'
-
-            print("########################################################################################################")
             val=getMetadata(path,'bbox', True)
-            print("########################################################################################################")
+            #only appends value if it is not None
             if (val and val[0]!=None):
                 bboxArray=bboxArray+[val[0]]
-            print("888888888888888888888888888888888888888888")
-            print(bboxArray)
-            print("888888888888888888888888888888888888888888")
-        
-            #ret_value_folder=[]     
-        #Copy from openfolder function in CLI tool                          
-        bboxes=bboxArray
-        lat1List=[lat1 for lat1, lng1, lat2, lng2 in bboxes]
-        print("22222222222222222222222222222222222222222222222222")
-        print(lat1List)
-        for x in lat1List:
-            try:
-                if x<min1:
-                    min1=x
-            except NameError:
-                min1 = x
+            if(val and val[2]!=[None]):
+                timeArray=timeArray+[val[2]]
+           
+        #Copy from openfolder function in CLI tool 
+        if len(bboxArray)!=0: 
+            bboxes=bboxArray
+            min_lon_list=[min_lon for min_lon, min_lat, max_lon, max_lat in bboxes]
+            for x in min_lon_list:
+                try:
+                    if x<min_lon_all:
+                        min_lon_all=x
+                except NameError:
+                    min_lon_all = x
+            min_lat_list=[min_lat for min_lon, min_lat, max_lon, max_lat in bboxes]
+            for x in min_lat_list:
+                try:
+                    if x<min_lat_all:
+                        min_lat_all=x
+                except NameError:
+                    min_lat_all = x
 
-        lng1List=[lng1 for lat1, lng1, lat2, lng2 in bboxes]
-        for x in lng1List:
-            try:
-                if x<min2:
-                    min2=x
-            except NameError:
-                min2 = x
+            max_lon_list=[max_lon for min_lon, min_lat, max_lon, max_lat in bboxes]
+            for x in max_lon_list:
+                try:
+                    if x>max_lon_all:
+                        max_lon_all=x
+                except NameError:
+                    max_lon_all=x
 
-        lat2List=[lat2 for lat1, lng1, lat2, lng2 in bboxes]
-        for x in lat2List:
-            try:
-                if x>max1:
-                    max1=x
-            except NameError:
-                max1=x
+            max_lat_list=[max_lat for min_lon, min_lat, max_lon, max_lat in bboxes]
+            for x in max_lat_list:
+                try:
+                    if x>max_lat_all:
+                        max_lat_all=x
+                except NameError:
+                    max_lat_all=x
 
-        lng2List=[lng2 for lat1, lng1, lat2, lng2 in bboxes]
-        for x in lng2List:
-            try:
-                if x>max2:
-                    max2=x
-            except NameError:
-                max2=x
+            # bounding box of the entire folder
+            folderbbox=[min_lon_all, min_lat_all, max_lon_all, max_lat_all]                        
 
-        folderbbox=[min1, min2, max1, max2]
-        #ret_value_folder.append(folderbbox)
-        record['bbox']=folderbbox
+        else:
+            folderbbox=[None]
 
-        print("########################################################################################################")
+        if len(timeArray)!=0: 
+            times=timeArray
+            start_dates=[]
+            end_dates=[]
+            for z in times:
+                start_dates.append(z[0])
+                end_dates.append(z[1])
+            min_date=min(start_dates)
+            max_date=max(end_dates)
+            folder_timeextend=[min_date, max_date]
+            
+            foldertime=folder_timeextend
+        else:
+            foldertime=[None]
+
+        record['bbox']=[folderbbox,[None], foldertime]
+
     except Exception as e:
         print (e)
 
