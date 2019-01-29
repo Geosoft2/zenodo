@@ -176,7 +176,11 @@ def similar(recid):
                     [
                         {"id": listItem[2]},
                         {"name": listItem[3]},
-                        {"bbox": listItem[1][0]},
+                        {"type": "Feature",
+                         "geometry": {
+                            "type": "Polygon",
+                            "coordinates": listItem[1][0]}
+                        },
                         {"filetype": listItem[4]},
                         {"sim_value": listItem[0]}
                     ]
