@@ -82,6 +82,11 @@ def similar(recid):
     """Get similar records by using record fetcher and request to get the actual record and a list of the 
     (last 1000 - as its the maximum possible in zenodo) metadata of records in the database."""
     
+    print('################ query string try #########################')
+    rqSize = request.args.get('size')
+    print(rqSize)
+    print('################ query string try #########################')
+
     """get actual record with fetcher"""
     record = fetch_record(recid)
 
@@ -167,8 +172,24 @@ def similar(recid):
     print(sortSimList)
     print('################## sortsim-list #######################')
 
-    """constant to set how many records will be displayed in the output json file later on"""
-    json_output_int = 20    
+    """variable to set how many records will be displayed in the output json file later on
+    can be set with query parameter size e.g. --> ?size=10"""
+    if rqSize:
+        try:
+            shouldbeZero = int(rqSize) - int(rqSize)
+            if shouldbeZero == 0:
+                size = int(rqSize)
+                if size < 20:
+                    sizeReverse = 20 - int(size)
+                    json_output_int = 20 - sizeReverse
+                else:
+                    json_output_int = 20
+            else:
+                json_output_int = 20
+        except ValueError:
+            json_output_int = 20
+    else:
+        json_output_int = 20
 
     """json dictionary to prepare for the response"""
     json_dict = {}
@@ -176,7 +197,11 @@ def similar(recid):
                     [
                         {"id": listItem[2]},
                         {"name": listItem[3]},
-                        {"bbox": listItem[1][0]},
+                        {"type": "Feature",
+                         "geometry": {
+                            "type": "Polygon",
+                            "coordinates": listItem[1][0]}
+                        },
                         {"filetype": listItem[4]},
                         {"sim_value": listItem[0]}
                     ]
