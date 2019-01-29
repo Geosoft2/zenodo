@@ -33,7 +33,7 @@ from zenodo.modules.records.fetchers import zenodo_record_fetcher
 from zenodo.modules.records.api import ZenodoRecord
 from zenodo.modules.stats.utils import extract_event_record_metadata, fetch_record, fetch_record_file
 
-from extractTool.similar import master
+from extractTool.similar_api import master
 
 import requests
 

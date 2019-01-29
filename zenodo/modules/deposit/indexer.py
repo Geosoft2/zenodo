@@ -67,22 +67,6 @@ def indexer_receiver(sender, json=None, record=None, index=None,
 
         pub_record = record.fetch_published()[1]
 
-        #CLI-Tool connection:
-        #creating parts of the path variable
-        # id_val=(pub_record['_files'][0]['file_id'])
-        # first_two=id_val[:2]
-        # second_two=id_val[2:4]
-        # last_part=id_val[4:]
-
-        # first_part=join(sys.prefix, 'var/instance/data')
-        # path=first_part+'/'+first_two+'/'+second_two+'/'+last_part+'/data'
-
-        # print("########################################################################################################")
-        # val=getMetadata(path,'bbox', 'single', True)
-        # print("########################################################################################################")
-        # print(val)
-        # print("########################################################################################################")
-
         # Temporarily set to draft mode to ensure that `clear` can be called
         json['_deposit']['status'] = 'draft'
         json.clear()
@@ -123,33 +107,76 @@ def extractor_receiver(sender, *args, **kwargs):
     :param record: Indexed deposit record.
     :type record: `invenio_records.api.Deposit`
     """
+
+    bboxArray=[]
     record = kwargs['record']
-    print("=============================================================================")
-    print(record)
-    print("=============================================================================")
-    #record['description'] = 'schroedingers boundingbox - ist sie da ist sie nicht da?'
-    record['bbox']=[1,2,3,4]
-    print("????????????????????????????????????????????????????????????????")
-    print(record)
-    print("??????????????????????????????????????????????????????????????????")
-    #print(record['description'])
-    #print(record[])
-    print("5666665656565656565656565656")
+    ########################weggenommen##############################################
+    #record['bbox']=[1,2,3,4]
     try:
-        print(record['_files'][0]['file_id'])
-        id_val=(record['_files'][0]['file_id'])
-        first_two=id_val[:2]
-        second_two=id_val[2:4]
-        last_part=id_val[4:]
+        print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+        print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+        print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+        print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+        print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+        for i in record['_files']:
+            id_val=(i['file_id'])
+            first_two=id_val[:2]
+            second_two=id_val[2:4]
+            last_part=id_val[4:]
 
-        first_part=join(sys.prefix, 'var/instance/data')
-        path=first_part+'/'+first_two+'/'+second_two+'/'+last_part+'/data'
+            first_part=join(sys.prefix, 'var/instance/data')
+            path=first_part+'/'+first_two+'/'+second_two+'/'+last_part+'/data'
 
-        print("########################################################################################################")
-        val=getMetadata(path,'bbox', 'single', True)
-        print("########################################################################################################")
-        print(val)
-        record['bbox']=val
+            print("########################################################################################################")
+            val=getMetadata(path,'bbox', True)
+            print("########################################################################################################")
+            if (val and val[0]!=None):
+                bboxArray=bboxArray+[val[0]]
+            print("888888888888888888888888888888888888888888")
+            print(bboxArray)
+            print("888888888888888888888888888888888888888888")
+        
+            #ret_value_folder=[]     
+        #Copy from openfolder function in CLI tool                          
+        bboxes=bboxArray
+        lat1List=[lat1 for lat1, lng1, lat2, lng2 in bboxes]
+        print("22222222222222222222222222222222222222222222222222")
+        print(lat1List)
+        for x in lat1List:
+            try:
+                if x<min1:
+                    min1=x
+            except NameError:
+                min1 = x
+
+        lng1List=[lng1 for lat1, lng1, lat2, lng2 in bboxes]
+        for x in lng1List:
+            try:
+                if x<min2:
+                    min2=x
+            except NameError:
+                min2 = x
+
+        lat2List=[lat2 for lat1, lng1, lat2, lng2 in bboxes]
+        for x in lat2List:
+            try:
+                if x>max1:
+                    max1=x
+            except NameError:
+                max1=x
+
+        lng2List=[lng2 for lat1, lng1, lat2, lng2 in bboxes]
+        for x in lng2List:
+            try:
+                if x>max2:
+                    max2=x
+            except NameError:
+                max2=x
+
+        folderbbox=[min1, min2, max1, max2]
+        #ret_value_folder.append(folderbbox)
+        record['bbox']=folderbbox
+
         print("########################################################################################################")
     except Exception as e:
         print (e)
