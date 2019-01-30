@@ -64,7 +64,7 @@
       "type": "object"
     },
     "person_or_org": {
-      "additionalProperties": true,
+      "additionalProperties": false,
       "properties": {
         "affiliation": {
           "description": "Affiliation for the purpose of this specific record.",
@@ -294,13 +294,13 @@
       "type": "array"
     },
     "_internal": {
-      "additionalProperties": true,
+      "additionalProperties": false,
       "description": "Metadata for internal use only.",
       "properties": {
         "comments": {
           "description": "Comments for internal purposes.",
           "items": {
-            "additionalProperties": true,
+            "additionalProperties": false,
             "properties": {
               "comment": {
                 "description": "Comment.",
@@ -325,12 +325,12 @@
           "type": "array"
         },
         "source": {
-          "additionalProperties": true,
+          "additionalProperties": false,
           "description": "Information related to initial source of acquisition.",
           "properties": {
             "agents": {
               "items": {
-                "additionalProperties": true,
+                "additionalProperties": false,
                 "properties": {
                   "email": {
                     "type": "string"
@@ -379,7 +379,7 @@
       "type": "object"
     },
     "_oai": {
-      "additionalProperties": true,
+      "additionalProperties": false,
       "description": "OAI-PMH specific information.",
       "properties": {
         "id": {
@@ -419,7 +419,7 @@
     "alternate_identifiers": {
       "description": "Alternate identifiers for record.",
       "items": {
-        "additionalProperties": true,
+        "additionalProperties": false,
         "properties": {
           "identifier": {
             "description": "Identifier of research output.",
@@ -480,7 +480,7 @@
     "contributors": {
       "description": "Contributors in order of importance.",
       "items": {
-        "additionalProperties": true,
+        "additionalProperties": false,
         "properties": {
           "affiliation": {
             "description": "Affiliation for the purpose of this specific record.",
@@ -546,7 +546,7 @@
     "creators": {
       "description": "Creators of record in order of importance.",
       "items": {
-        "additionalProperties": true,
+        "additionalProperties": false,
         "properties": {
           "affiliation": {
             "description": "Affiliation for the purpose of this specific record.",
@@ -602,7 +602,7 @@
       "type": "array"
     },
     "imprint": {
-      "additionalProperties": true,
+      "additionalProperties": false,
       "properties": {
         "isbn": {
           "type": "string"
@@ -617,7 +617,7 @@
       "type": "object"
     },
     "journal": {
-      "additionalProperties": true,
+      "additionalProperties": false,
       "description": "Journal in which this record is published.",
       "properties": {
         "issue": {
@@ -713,7 +713,7 @@
       "type": "array"
     },
     "part_of": {
-      "additionalProperties": true,
+      "additionalProperties": false,
       "description": "For parts of books and reports.",
       "properties": {
         "pages": {
@@ -738,7 +738,7 @@
     "references": {
       "description": "Raw textual references when identifier is not known.",
       "items": {
-        "additionalProperties": true,
+        "additionalProperties": false,
         "properties": {
           "raw_reference": {
             "type": "string"
@@ -827,7 +827,7 @@
       "type": "array"
     },
     "resource_type": {
-      "additionalProperties": true,
+      "additionalProperties": false,
       "description": "Record resource type.",
       "properties": {
         "openaire_subtype": {
@@ -852,7 +852,7 @@
     "subjects": {
       "description": "Subjects from specific vocabularies.",
       "items": {
-        "additionalProperties": true,
+        "additionalProperties": false,
         "properties": {
           "identifier": {
             "description": "Subjects term identifier.",
@@ -872,12 +872,12 @@
       "type": "array"
     },
     "thesis": {
-      "additionalProperties": true,
+      "additionalProperties": false,
       "properties": {
         "supervisors": {
           "description": "Supervisors of thesis in order of importance.",
           "items": {
-            "additionalProperties": true,
+            "additionalProperties": false,
             "properties": {
               "affiliation": {
                 "description": "Affiliation for the purpose of this specific record.",

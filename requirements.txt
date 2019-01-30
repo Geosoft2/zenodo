@@ -52,7 +52,7 @@ cffi==1.11.5
 chardet==3.0.4
 citeproc-py==0.4.0
 citeproc-py-styles==0.1.1
-click==6.7
+click==7.0
 configparser==3.5.0
 contextlib2==0.5.5
 cookiecutter==1.6.0
@@ -197,6 +197,7 @@ ptyprocess==0.5.2
 pyasn1==0.4.2
 pycountry==18.2.23
 pycparser==2.18
+pygdal==2.3.2.4
 Pygments==2.2.0
 PyJWT==1.6.1
 pyOpenSSL==17.5.0

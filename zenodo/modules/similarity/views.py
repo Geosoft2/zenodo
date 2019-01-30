@@ -82,21 +82,21 @@ def similar(recid):
     """Get similar records by using record fetcher and request to get the actual record and a list of the 
     (last 1000 - as its the maximum possible in zenodo) metadata of records in the database."""
     
-    print('################ query string try #########################')
+    # print('################ query string try #########################')
     rqSize = request.args.get('size')
-    print(rqSize)
-    print('################ query string try #########################')
+    # print(rqSize)
+    # print('################ query string try #########################')
 
     """get actual record with fetcher"""
     record = fetch_record(recid)
 
-    print('################ record fetch try #########################')
-    print(record[1]['_files'][0]['type'])
-    print('################ record fetch try #########################')
+    # print('################ record fetch try #########################')
+    # print(record[1]['_files'][0]['type'])
+    # print('################ record fetch try #########################')
 
-    print('################ record bbox fetch try #########################')
-    print(type(record[1]['bbox']))
-    print('################ record bbox fetch try #########################')    
+    # print('################ record bbox fetch try #########################')
+    # print(type(record[1]['bbox']))
+    # print('################ record bbox fetch try #########################')    
 
     """variable of the record id for future use in loops as the parameter wont do"""
     rrid = record[1]['recid']
@@ -110,21 +110,21 @@ def similar(recid):
     recordlist_raw = response.json()
     
     """prints for navigation purpose"""
-    print('################ bbox fetch try #########################')
-    print(recordlist_raw['hits']['hits'][0]['metadata']['bbox'])
-    print('################ bbox fetch try #########################')
+    # print('################ bbox fetch try #########################')
+    # print(recordlist_raw['hits']['hits'][0]['metadata']['bbox'])
+    # print('################ bbox fetch try #########################')
 
-    print('################ id fetch try #########################')
-    print(recordlist_raw['hits']['hits'][0]['id'])
-    print('################ id fetch try #########################')
+    # print('################ id fetch try #########################')
+    # print(recordlist_raw['hits']['hits'][0]['id'])
+    # print('################ id fetch try #########################')
 
-    print('################ name fetch try #########################')
-    print(recordlist_raw['hits']['hits'][0]['metadata']['title'])
-    print('################ id fetch try #########################')
+    # print('################ name fetch try #########################')
+    # print(recordlist_raw['hits']['hits'][0]['metadata']['title'])
+    # print('################ id fetch try #########################')
 
-    print('################ total file count fetch try #########################')
-    print(recordlist_raw['hits']['total'])
-    print('################ total file count fetch try #########################')
+    # print('################ total file count fetch try #########################')
+    # print(recordlist_raw['hits']['total'])
+    # print('################ total file count fetch try #########################')
 
     """total file count from the record-metadata-list"""
     total_files = recordlist_raw['hits']['total']
@@ -152,25 +152,25 @@ def similar(recid):
         except Exception:
             print('no valid bounding box found in record '+str(rid))
     
-    print('################## bbox-list #######################')
-    print(bboxList)
-    print('################## bbox-list #######################')
+    # print('################## bbox-list #######################')
+    # print(bboxList)
+    # print('################## bbox-list #######################')
     
     """appending the simulation score to the list with the method written in our module extractTool similar.py"""
     simList = list()
     for bboxItem in bboxList:
         simList.append([master(bboxItem[0][0],record[1]['bbox'][0], bboxItem[3], record[1]['_files'][0]['type']),bboxItem[0], bboxItem[1], bboxItem[2], bboxItem[3]])
     
-    print('################## sim-list #######################')
-    print(simList)
-    print('################## sim-list #######################')
+    # print('################## sim-list #######################')
+    # print(simList)
+    # print('################## sim-list #######################')
 
     """sorted list as of the similarity value descending order"""
-    sortSimList = sorted(simList, key=lambda x: x[0], reverse=True)
+    sortSimList = sorted(simList, key=lambda x: x[0], reverse=False)
 
-    print('################## sortsim-list #######################')
-    print(sortSimList)
-    print('################## sortsim-list #######################')
+    # print('################## sortsim-list #######################')
+    # print(sortSimList)
+    # print('################## sortsim-list #######################')
 
     """variable to set how many records will be displayed in the output json file later on
     can be set with query parameter size e.g. --> ?size=10"""
@@ -207,9 +207,9 @@ def similar(recid):
                     ]
                     } for listItem in sortSimList[0:json_output_int]]
 
-    print('################## json_dict #######################')
-    print(json_dict)
-    print('################## json_dict #######################')
+    # print('################## json_dict #######################')
+    # print(json_dict)
+    # print('################## json_dict #######################')
     
     return Response(
         json.dumps({

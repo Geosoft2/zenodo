@@ -79,7 +79,7 @@ def index():
                 'records': url_for(
                     'invenio_records_rest.recid_list', _external=True), 
                 'similarity': url_for(
-                    'invenio_records_rest.recid_list', _external=True),  
+                    'zenodo_similarity.index', _external=True),  
                 }
             },
             **_format_args()
